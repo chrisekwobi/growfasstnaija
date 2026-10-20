@@ -2,7 +2,6 @@ import { useMemo, useState, type FormEvent, type ReactNode } from "react";
 import { Link } from "@tanstack/react-router";
 import {
   ArrowRight,
-  ArrowUpRight,
   BarChart3,
   Check,
   ChevronDown,
@@ -14,7 +13,6 @@ import {
   Menu,
   MessageCircle,
   Music2,
-  Play,
   Search,
   Share2,
   ShieldCheck,
@@ -92,7 +90,7 @@ export function SiteHeader() {
               ))}
             </div>
           </details>
-          <Link to="/#how-it-works">How it works</Link>
+          <Link to="/" hash="how-it-works">How it works</Link>
           <Link to="/about">About</Link>
           <Link to="/faq">FAQ</Link>
         </div>
