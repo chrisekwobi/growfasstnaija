@@ -14,4 +14,25 @@ describe("App routing", () => {
 
     expect(matches.at(-1)?.routeId).not.toBe(rootRouteId);
   });
+
+  it("matches every requested Glow Fast content page", () => {
+    const router = createRouter({ routeTree, context: { queryClient: new QueryClient() } });
+    const paths = [
+      "/services",
+      "/services/instagram",
+      "/services/tiktok",
+      "/services/youtube",
+      "/services/facebook",
+      "/services/engagement",
+      "/about",
+      "/faq",
+      "/contact",
+      "/terms",
+      "/privacy",
+    ];
+
+    for (const path of paths) {
+      expect(router.matchRoutes(path).at(-1)?.routeId, path).not.toBe(rootRouteId);
+    }
+  });
 });
