@@ -1,4 +1,4 @@
 - [x] Build shared Glow Fast branding, catalogue, and WhatsApp ordering.
 - [x] Create home, service catalogue, platform, about, FAQ, contact, terms, and privacy pages.
 - [x] Add route-specific metadata, favicon, and responsive styles.
-- [ ] Verify navigation, filters, WhatsApp messages, and mobile layout.
+- [x] Verify navigation, filters, WhatsApp messages, and mobile layout.
