@@ -9,4 +9,4 @@
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
 
-- Keep Glow Fast public-page copy, central package catalogue, and WhatsApp-order logic in reusable shared modules so prices and contact details stay consistent across routes.
+- Keep Grow Fast public-page copy, central package catalogue, and WhatsApp-order logic in reusable shared modules so prices and contact details stay consistent across routes.

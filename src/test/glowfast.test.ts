@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { packages, packageOrderMessage, whatsappUrl, generalWhatsAppMessage } from "@/lib/glowfast";
 
-describe("Glow Fast WhatsApp ordering", () => {
+describe("Grow Fast WhatsApp ordering", () => {
   it("uses the supplied Nigerian WhatsApp number in international format", () => {
     expect(whatsappUrl(generalWhatsAppMessage)).toContain("https://wa.me/2348154776181?");
   });
