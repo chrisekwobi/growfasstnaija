@@ -21,7 +21,9 @@ describe("Grow Fast WhatsApp ordering", () => {
   });
 
   it("asks for confirmation before payment and instructions in the same WhatsApp chat", () => {
-    const message = packageOrderMessage(packages[0]);
+    const selected = packages[0];
+    if (!selected) throw new Error("A package is required for the enquiry test");
+    const message = packageOrderMessage(selected);
     expect(message.indexOf("before I pay")).toBeGreaterThan(message.indexOf("final price"));
     expect(message.indexOf("payment instructions in this WhatsApp chat")).toBeGreaterThan(message.indexOf("before I pay"));
   });
