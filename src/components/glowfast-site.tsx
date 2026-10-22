@@ -66,9 +66,9 @@ export function pageHead(title: string, description: string) {
 
 export function Brand() {
   return (
-    <Link to="/" className="brand-link" aria-label="Glow Fast home">
+    <Link to="/" className="brand-link" aria-label="Grow Fast home">
       <span className="brand-mark"><Sparkles size={19} aria-hidden="true" /></span>
-      <span>GLOW<span className="text-glow">FAST</span></span>
+      <span>GROW<span className="text-glow">FAST</span></span>
     </Link>
   );
 }
@@ -141,7 +141,7 @@ export function SiteFooter() {
         <div className="footer-col">
           <h3>Explore</h3>
           <Link to="/services">All services</Link>
-          <Link to="/about">About Glow Fast</Link>
+          <Link to="/about">About Grow Fast</Link>
           <Link to="/faq">Frequently asked questions</Link>
           <Link to="/contact">Contact</Link>
         </div>
@@ -162,7 +162,7 @@ export function SiteFooter() {
         </div>
       </div>
       <div className="page-wrap footer-bottom">
-        <span>© {new Date().getFullYear()} Glow Fast. All rights reserved.</span>
+        <span>© {new Date().getFullYear()} Grow Fast. All rights reserved.</span>
         <span>Draft package values and policies must be confirmed before ordering.</span>
       </div>
     </footer>
@@ -254,7 +254,7 @@ function FinalCta() {
       <div className="cta-band">
         <div className="cta-content">
           <Eyebrow>Your next growth move starts here</Eyebrow>
-          <h2 id="final-cta-title">Ready to make your social media glow?</h2>
+          <h2 id="final-cta-title">Ready to grow fast and monetize your social media?</h2>
           <p>Explore the draft packages, find a service that fits, and confirm the details with our team on WhatsApp.</p>
           <div className="hero-actions">
             <Button asChild><Link to="/services">Explore packages <ArrowRight aria-hidden="true" /></Link></Button>
@@ -279,7 +279,7 @@ export function HomePage() {
   const useCases = ["Music promotion and artist visibility", "Content creators and influencers", "Business pages and product awareness", "YouTube video promotion", "Short-form video creators", "Brand engagement campaigns"];
   const steps = [
     ["01", "Choose your service", "Browse platforms and explore the sample package options."],
-    ["02", "Enquire through WhatsApp", "Send the selected service details to Glow Fast in one tap."],
+    ["02", "Enquire through WhatsApp", "Send the selected service details to Grow Fast in one tap."],
     ["03", "Confirm and get started", "Confirm final pricing, requirements, delivery expectations, and payment with the team."],
   ];
 
@@ -288,7 +288,7 @@ export function HomePage() {
       <section className="page-wrap hero-section" aria-labelledby="home-title">
         <div>
           <Eyebrow>Social media services · Nigeria</Eyebrow>
-          <h1 id="home-title" className="hero-title">Make your social media <span className="text-glow">glow.</span></h1>
+          <h1 id="home-title" className="hero-title"><span className="text-glow">Grow fast</span> and monetize your social media.</h1>
           <p className="hero-copy">Explore social media marketing services for creators, businesses, and ambitious brands. Find a package example and confirm the details in just a few clicks.</p>
           <div className="hero-actions">
             <Button asChild><Link to="/services">Explore packages <ArrowRight aria-hidden="true" /></Link></Button>
@@ -316,7 +316,7 @@ export function HomePage() {
       </section>
 
       <section className="page-wrap section" aria-labelledby="benefits-title">
-        <SectionHeading eyebrow="The Glow Fast approach" title="A simpler way to get started" copy="Explore your options, then speak directly with the team to confirm what is currently available." />
+        <SectionHeading eyebrow="The Grow Fast approach" title="A simpler way to get started" copy="Explore your options, then speak directly with the team to confirm what is currently available." />
         <div className="feature-grid">
           {benefits.map(([Icon, title, copy]) => <div className="feature-item" key={title}><Icon size={21} aria-hidden="true" /><h3>{title}</h3><p>{copy}</p></div>)}
         </div>
@@ -362,7 +362,7 @@ export function ServicesPage() {
   return (
     <main className="page-wrap">
       <section className="page-intro">
-        <Eyebrow>Glow Fast catalogue</Eyebrow>
+        <Eyebrow>Grow Fast catalogue</Eyebrow>
         <h1 className="section-title">Find the right service for your next move.</h1>
         <p className="section-copy">Search and compare editable package examples. Prices and service availability are draft details that must be confirmed before ordering.</p>
         <div className="draft-note mt-5"><CircleHelp size={15} aria-hidden="true" /> Sample package catalogue · confirm all details on WhatsApp</div>
@@ -376,7 +376,7 @@ export function ServicesPage() {
           <Button variant="outline" onClick={reset}><X size={16} aria-hidden="true" /> Reset</Button>
         </div>
         {shownPackages.length ? <div className="package-grid">{shownPackages.map((item) => <PackageCard item={item} key={item.id} />)}</div> : <div className="empty-state"><Search className="mx-auto mb-3" aria-hidden="true" /><p>No packages match those filters.</p><Button className="mt-4" variant="outline" onClick={reset}>Reset filters</Button></div>}
-        <p className="package-disclaimer">{shownPackages.length} draft package examples shown. Final offers, fulfilment, platform compliance, and payment terms must be confirmed with Glow Fast.</p>
+        <p className="package-disclaimer">{shownPackages.length} draft package examples shown. Final offers, fulfilment, platform compliance, and payment terms must be confirmed with Grow Fast.</p>
       </section>
       <FinalCta />
     </main>
@@ -393,7 +393,7 @@ export function PlatformPage({ slug }: { slug: string }) {
         <div>
           <Eyebrow>{item.name} · package examples</Eyebrow>
           <h1 className="section-title">{item.headline}</h1>
-          <p className="section-copy">{item.description} Package values below are draft samples. Ask the Glow Fast team to confirm current availability, policy, and delivery before ordering.</p>
+          <p className="section-copy">{item.description} Package values below are draft samples. Ask the Grow Fast team to confirm current availability, policy, and delivery before ordering.</p>
           <div className="hero-actions"><WhatsAppButton message={generalWhatsAppMessage}><MessageCircle aria-hidden="true" /> Ask about {item.name}</WhatsAppButton><Button asChild variant="outline"><Link to="/services">See all services <ArrowRight aria-hidden="true" /></Link></Button></div>
         </div>
         <img className="service-hero-art" src={heroArt} alt={`Original digital illustration representing ${item.name} social media services`} width={1024} height={1024} loading="lazy" />
@@ -415,8 +415,8 @@ export function AboutPage() {
   return (
     <main className="page-wrap">
       <section className="service-hero">
-        <div><Eyebrow>About Glow Fast</Eyebrow><h1 className="section-title">Helping creators and brands show up online.</h1><p className="section-copy">Glow Fast is built around one simple idea: social media services should be easier to discover, understand, and enquire about.</p><div className="hero-actions"><Button asChild><Link to="/services">Explore services <ArrowRight aria-hidden="true" /></Link></Button></div></div>
-        <img className="service-hero-art" src={heroArt} alt="Original Glow Fast digital illustration for social media marketing" width={1024} height={1024} loading="lazy" />
+        <div><Eyebrow>About Grow Fast</Eyebrow><h1 className="section-title">Helping creators and brands show up online.</h1><p className="section-copy">Grow Fast is built around one simple idea: social media services should be easier to discover, understand, and enquire about.</p><div className="hero-actions"><Button asChild><Link to="/services">Explore services <ArrowRight aria-hidden="true" /></Link></Button></div></div>
+        <img className="service-hero-art" src={heroArt} alt="Original Grow Fast digital illustration for social media marketing" width={1024} height={1024} loading="lazy" />
       </section>
       <section className="section pt-6"><SectionHeading eyebrow="Our approach" title="Built around clarity and conversation" /><div className="feature-grid"><div className="feature-item"><Sparkles aria-hidden="true" /><h3>Make options clear</h3><p>Present service examples with visible quantities and prices, then confirm the real offer directly.</p></div><div className="feature-item"><ShieldCheck aria-hidden="true" /><h3>Keep trust at the centre</h3><p>No made-up stories, performance claims, or promises of guaranteed growth.</p></div><div className="feature-item"><MessageCircle aria-hidden="true" /><h3>Keep enquiries simple</h3><p>Move from a package to a WhatsApp conversation with its details ready to review.</p></div></div></section>
       <FinalCta />
@@ -425,7 +425,7 @@ export function AboutPage() {
 }
 
 export function FaqPage() {
-  return <main className="page-wrap"><section className="page-intro"><Eyebrow>Help and information</Eyebrow><h1 className="section-title">Frequently asked questions</h1><p className="section-copy">Answers below are cautious draft guidance. Please confirm business-specific details with Glow Fast before ordering.</p></section><section className="section pt-4"><FaqList /></section><FinalCta /></main>;
+  return <main className="page-wrap"><section className="page-intro"><Eyebrow>Help and information</Eyebrow><h1 className="section-title">Frequently asked questions</h1><p className="section-copy">Answers below are cautious draft guidance. Please confirm business-specific details with Grow Fast before ordering.</p></section><section className="section pt-4"><FaqList /></section><FinalCta /></main>;
 }
 
 export function ContactPage() {
@@ -435,15 +435,15 @@ export function ContactPage() {
     const form = event.currentTarget;
     if (!form.reportValidity()) return;
     const data = new FormData(form);
-    const message = `Hello Glow Fast! I would like to make an enquiry.\n\nName: ${String(data.get("name") ?? "")}\nPreferred contact: ${String(data.get("contact") ?? "")}\nMessage: ${String(data.get("message") ?? "")}`;
-    setNotice("Your enquiry is ready in WhatsApp. Review and send it there to contact Glow Fast.");
+    const message = `Hello Grow Fast! I would like to make an enquiry.\n\nName: ${String(data.get("name") ?? "")}\nPreferred contact: ${String(data.get("contact") ?? "")}\nMessage: ${String(data.get("message") ?? "")}`;
+    setNotice("Your enquiry is ready in WhatsApp. Review and send it there to contact Grow Fast.");
     window.open(whatsappUrl(message), "_blank", "noopener,noreferrer");
   };
   return (
     <main className="page-wrap">
-      <section className="page-intro"><Eyebrow>Let's talk</Eyebrow><h1 className="section-title">Get in touch with Glow Fast.</h1><p className="section-copy">Ask about package availability, pricing, requirements, and delivery. No payment or sensitive account information is collected here.</p></section>
+      <section className="page-intro"><Eyebrow>Let's talk</Eyebrow><h1 className="section-title">Get in touch with Grow Fast.</h1><p className="section-copy">Ask about package availability, pricing, requirements, and delivery. No payment or sensitive account information is collected here.</p></section>
       <section className="section pt-4 contact-layout">
-        <div><SectionHeading title="Chat with us" copy="WhatsApp is the primary enquiry channel. Official details are shared by Glow Fast in this conversation." /><WhatsAppButton message={generalWhatsAppMessage}><MessageCircle aria-hidden="true" /> Continue on WhatsApp</WhatsAppButton><p className="package-disclaimer">Business email, social media profiles, and support hours have not been supplied.</p></div>
+        <div><SectionHeading title="Chat with us" copy="WhatsApp is the primary enquiry channel. Official details are shared by Grow Fast in this conversation." /><WhatsAppButton message={generalWhatsAppMessage}><MessageCircle aria-hidden="true" /> Continue on WhatsApp</WhatsAppButton><p className="package-disclaimer">Business email, social media profiles, and support hours have not been supplied.</p></div>
         <form className="contact-form" onSubmit={submit}>
           <label>Your name<input className="field-control" name="name" autoComplete="name" required maxLength={100} /></label>
           <label>Email or preferred contact method<input className="field-control" name="contact" autoComplete="email" required maxLength={150} /></label>
@@ -460,9 +460,9 @@ export function LegalPage({ kind }: { kind: "terms" | "privacy" }) {
   const terms = kind === "terms";
   return (
     <main className="page-wrap">
-      <section className="page-intro"><Eyebrow>Glow Fast · draft for review</Eyebrow><h1 className="section-title">{terms ? "Terms and conditions" : "Privacy policy"}</h1><p className="section-copy">This editable draft needs review and approval by the business owner before publication.</p></section>
+      <section className="page-intro"><Eyebrow>Grow Fast · draft for review</Eyebrow><h1 className="section-title">{terms ? "Terms and conditions" : "Privacy policy"}</h1><p className="section-copy">This editable draft needs review and approval by the business owner before publication.</p></section>
       <section className="section pt-4"><div className="draft-page">Draft policy: details below are general placeholders, not legal advice. Add the business's confirmed policy and have it reviewed before launch.</div>
-        {terms ? <div className="prose-block mt-8"><h2>Services and enquiries</h2><p>Package names, quantities, and prices shown on this website are editable sample values and are not confirmed offers. Contact Glow Fast to confirm service availability, scope, payment instructions, delivery expectations, and any requirements before placing an order or making payment.</p><h2>Platform requirements</h2><p>Customers should review relevant social platform terms and applicable advertising rules. Do not share passwords, authentication codes, or account recovery information. No specific outcomes, virality, sales, or organic growth are guaranteed.</p><h2>Changes and cancellations</h2><p>Refund, cancellation, replacement, and dispute terms have not yet been supplied. Ask Glow Fast about the applicable policy before payment. The owner should replace this draft with confirmed terms.</p><h2>Contact</h2><p>For questions about this draft, contact Glow Fast through the WhatsApp link on the Contact page.</p></div> : <div className="prose-block mt-8"><h2>Information you choose to share</h2><p>This website's enquiry form opens WhatsApp with the details you enter. It does not submit the form to a Glow Fast server. Review the message before sending it. WhatsApp will process information under its own terms and privacy policy.</p><h2>Information to keep private</h2><p>Do not share passwords, one-time authentication codes, or recovery information. The website does not request payment card details or account credentials.</p><h2>Cookies and analytics</h2><p>Cookie and analytics practices have not been supplied. The owner should add accurate details here if tracking, advertising, or analytics tools are enabled.</p><h2>Privacy requests</h2><p>Contact details for privacy requests and any applicable data-retention practices must be confirmed by the business owner before publication.</p></div>}
+        {terms ? <div className="prose-block mt-8"><h2>Services and enquiries</h2><p>Package names, quantities, and prices shown on this website are editable sample values and are not confirmed offers. Contact Grow Fast to confirm service availability, scope, payment instructions, delivery expectations, and any requirements before placing an order or making payment.</p><h2>Platform requirements</h2><p>Customers should review relevant social platform terms and applicable advertising rules. Do not share passwords, authentication codes, or account recovery information. No specific outcomes, virality, sales, or organic growth are guaranteed.</p><h2>Changes and cancellations</h2><p>Refund, cancellation, replacement, and dispute terms have not yet been supplied. Ask Grow Fast about the applicable policy before payment. The owner should replace this draft with confirmed terms.</p><h2>Contact</h2><p>For questions about this draft, contact Grow Fast through the WhatsApp link on the Contact page.</p></div> : <div className="prose-block mt-8"><h2>Information you choose to share</h2><p>This website's enquiry form opens WhatsApp with the details you enter. It does not submit the form to a Grow Fast server. Review the message before sending it. WhatsApp will process information under its own terms and privacy policy.</p><h2>Information to keep private</h2><p>Do not share passwords, one-time authentication codes, or recovery information. The website does not request payment card details or account credentials.</p><h2>Cookies and analytics</h2><p>Cookie and analytics practices have not been supplied. The owner should add accurate details here if tracking, advertising, or analytics tools are enabled.</p><h2>Privacy requests</h2><p>Contact details for privacy requests and any applicable data-retention practices must be confirmed by the business owner before publication.</p></div>}
       </section>
     </main>
   );

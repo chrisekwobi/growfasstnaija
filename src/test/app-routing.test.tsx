@@ -15,7 +15,7 @@ describe("App routing", () => {
     expect(matches.at(-1)?.routeId).not.toBe(rootRouteId);
   });
 
-  it("matches every requested Glow Fast content page", () => {
+  it("matches every requested Grow Fast content page", () => {
     const router = createRouter({ routeTree, context: { queryClient: new QueryClient() } });
     const paths = [
       "/services",
