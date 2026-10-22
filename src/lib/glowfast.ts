@@ -1,7 +1,16 @@
 export const WHATSAPP_NUMBER = "2348154776181";
 
 export const generalWhatsAppMessage =
-  "Hello Grow Fast! I would like to know more about your social media marketing services.";
+  "Hello Grow Fast! I would like to enquire about your social media marketing services. Please confirm the service, final price and delivery terms, then share payment instructions in this chat before I pay.";
+
+export const whatsappOrderSteps = [
+  ["01", "Enquire on WhatsApp", "Choose a platform or package and discuss your goals with Grow Fast."],
+  ["02", "Confirm your order", "Agree the service, final price, requirements, delivery and cancellation terms in the chat."],
+  ["03", "Receive payment instructions", "Pay only after confirmation, using the payment method shared in the chat. Keep your receipt and request order confirmation."],
+] as const;
+
+export const platformEnquiryMessage = (platform: string) =>
+  `Hello Grow Fast! I would like to enquire about ${platform} services. Please confirm availability, the final price, requirements and delivery terms, then share payment instructions in this WhatsApp chat before I pay.`;
 
 export type Platform = "Instagram" | "TikTok" | "YouTube" | "Facebook" | "Engagement";
 export type ServicePackage = {
@@ -41,7 +50,7 @@ export const formatNaira = (price: number) =>
   `₦${new Intl.NumberFormat("en-NG", { maximumFractionDigits: 0 }).format(price)}`;
 
 export const packageOrderMessage = (item: ServicePackage) =>
-  `Hello Grow Fast! I would like to enquire about this package.\n\nPlatform: ${item.platform}\nService: ${item.service}\nPackage: ${item.name}\nQuantity: ${item.quantity}\nPrice shown: ${formatNaira(item.price)} (draft sample; please confirm)\n\nPlease confirm availability, delivery expectations, payment instructions, and any requirements.\n\nThank you.`;
+  `Hello Grow Fast! I would like to enquire about this package.\n\nPlatform: ${item.platform}\nService: ${item.service}\nPackage: ${item.name}\nQuantity: ${item.quantity}\nPrice shown: ${formatNaira(item.price)} (draft sample; please confirm)\n\nPlease confirm availability, final price, delivery expectations, cancellation terms and any requirements before I pay. Then share payment instructions in this WhatsApp chat.\n\nThank you.`;
 
 export const whatsappUrl = (message: string) =>
   `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
@@ -50,14 +59,14 @@ export const platformPages = [
   { name: "Instagram", slug: "instagram", path: "/services/instagram", icon: "instagram", description: "Explore draft engagement and visibility options for Instagram creators and brands.", headline: "Grow Your Instagram Presence", service: "Profile engagement" },
   { name: "TikTok", slug: "tiktok", path: "/services/tiktok", icon: "video", description: "Explore draft visibility options for short-form video creators.", headline: "Give Your TikTok Content More Visibility", service: "Video views" },
   { name: "YouTube", slug: "youtube", path: "/services/youtube", icon: "youtube", description: "Explore draft package examples for video visibility on YouTube.", headline: "Support Your YouTube Growth Goals", service: "Video views" },
-  { name: "Facebook", slug: "facebook", path: "/services/facebook", icon: "users", description: "Explore draft page engagement options for businesses and communities.", headline: "Build Your Facebook Page Presence", service: "Page engagement" },
+  { name: "Facebook", slug: "facebook", path: "/services/facebook", icon: "facebook", description: "Explore draft page engagement options for businesses and communities.", headline: "Build Your Facebook Page Presence", service: "Page engagement" },
   { name: "Social Engagement", slug: "engagement", path: "/services/engagement", icon: "heart", description: "Browse draft examples for reactions and public post engagement.", headline: "Explore Likes, Comments, Views and More", service: "Likes and reactions" },
   { name: "Creator Visibility", slug: "engagement", path: "/services/engagement", icon: "sparkles", description: "Discover enquiry-first options for creator and brand campaigns.", headline: "Visibility for Your Next Campaign", service: "Creator visibility" },
 ];
 
 export const faqItems = [
   { question: "How do I place an order?", answer: "Choose a package and continue to WhatsApp. Our team can confirm availability, the final price, any requirements, and delivery expectations before you proceed." },
-  { question: "How do I pay?", answer: "Payment methods are not yet confirmed. Please ask the team on WhatsApp for current payment instructions before making any payment." },
+  { question: "How do I pay?", answer: "First enquire on WhatsApp and agree the service, final price and terms. Grow Fast then shares payment instructions in the same chat. The website and WhatsApp chat do not process payments; use the confirmed payment method, keep your receipt and request order confirmation. Specific payment methods have not yet been supplied." },
   { question: "How long does delivery take?", answer: "Delivery timing depends on the selected service and must be confirmed by the team before an order is accepted." },
   { question: "Which platforms do you support?", answer: "This draft catalogue shows Instagram, TikTok, YouTube, Facebook, and general engagement examples. Please confirm which services are currently available." },
   { question: "Can I order more than one service?", answer: "You can ask about multiple services in one WhatsApp conversation. Availability and pricing should be confirmed for each package." },

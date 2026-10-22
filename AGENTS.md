@@ -10,3 +10,5 @@
 <!-- LOVABLE:END -->
 
 - Keep Grow Fast public-page copy, central package catalogue, and WhatsApp-order logic in reusable shared modules so prices and contact details stay consistent across routes.
+- Use shared platform navigation and enquiry/payment steps on public service pages so each platform keeps its context and all orders use one consistent WhatsApp handoff; payment execution remains outside the website.
+- Use semantic button colour tokens across Button variants so all website actions share the same palette without changing non-button brand accents.

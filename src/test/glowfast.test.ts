@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { packages, packageOrderMessage, whatsappUrl, generalWhatsAppMessage } from "@/lib/glowfast";
+import { packages, packageOrderMessage, whatsappUrl, generalWhatsAppMessage, platformEnquiryMessage } from "@/lib/glowfast";
 
 describe("Grow Fast WhatsApp ordering", () => {
   it("uses the supplied Nigerian WhatsApp number in international format", () => {
@@ -18,5 +18,17 @@ describe("Grow Fast WhatsApp ordering", () => {
     expect(message).toContain(`Package: ${selected.name}`);
     expect(message).toContain(`Quantity: ${selected.quantity}`);
     expect(message).toContain("Price shown: ₦15,000");
+  });
+
+  it("asks for confirmation before payment and instructions in the same WhatsApp chat", () => {
+    const message = packageOrderMessage(packages[0]);
+    expect(message.indexOf("before I pay")).toBeGreaterThan(message.indexOf("final price"));
+    expect(message.indexOf("payment instructions in this WhatsApp chat")).toBeGreaterThan(message.indexOf("before I pay"));
+  });
+
+  it.each(["TikTok", "Facebook", "YouTube", "Instagram"])("preserves the %s platform in a WhatsApp enquiry", (platform) => {
+    const message = new URL(whatsappUrl(platformEnquiryMessage(platform))).searchParams.get("text");
+    expect(message).toContain(`about ${platform} services`);
+    expect(message).toContain("payment instructions in this WhatsApp chat before I pay");
   });
 });
