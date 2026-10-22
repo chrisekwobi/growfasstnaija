@@ -2,3 +2,6 @@
 - [x] Create home, service catalogue, platform, about, FAQ, contact, terms, and privacy pages.
 - [x] Add route-specific metadata, favicon, and responsive styles.
 - [x] Verify navigation, filters, WhatsApp messages, and mobile layout.
+- [ ] Make WhatsApp-first enquiries and payment instructions explicit.
+- [ ] Display clearly labelled social-platform links and unify orange buttons.
+- [ ] Verify platform navigation and WhatsApp package enquiries.
