@@ -14,6 +14,6 @@
 - [x] Load homepage services from Cloud and verify public pages, route gates, database grants, and validation tests.
 - [ ] Assign the owner's admin role and verify signed-in balance, admin editing, and live Nitro sync — waiting for the owner to register and identify their account; there are no auth users yet.
 - [x] Build Paystack top-up amounts, authenticated checkout, signed webhook, atomic credit settlement, and callback verification.
-- [ ] Verify Paystack checkout end-to-end — waiting for Paystack credentials and a registered account; live payments require provider approval of the business.
+- [ ] Verify Paystack checkout end-to-end — credentials saved; waiting for a registered account and Paystack webhook configuration on a published site. Live payments require provider approval of the business.
 - [x] Implement validated credit ordering, atomic deductions/refunds, Nitro submission, login return, and Add credits entry.
 - [ ] Verify paid-order success/refund end-to-end — waiting for a registered account, funded credits, active Nitro service, and authorization for a real provider order; currently there are no users or services.

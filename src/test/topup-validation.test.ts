@@ -5,7 +5,7 @@ import { paymentMatches, topupAmountSchema, topupInputSchema, topupPresets, toKo
 describe("Paystack top-up rules", () => {
   it("offers the five requested Naira amounts", () => expect(topupPresets).toEqual([1000, 2000, 5000, 10000, 20000]));
   it("requires at least ₦500", () => { expect(topupAmountSchema.safeParse(499.99).success).toBe(false); expect(topupAmountSchema.parse(500)).toBe(500); });
-  it("converts ₦1 per credit to kobo without changing value", () => { expect(toKobo(1000)).toBe(100000); expect(toKobo(500.25) / 100).toBe(500.25); });
+  it("converts ₦1 per credit to kobo without changing value", () => { expect(toKobo(1000)).toBe(100000); expect(toKobo(500.25) / 100).toBe(500.25); expect(toKobo(1000.01)).toBe(100001); });
   it("rejects fractional kobo, nonfinite and unsafe amounts", () => { for (const amount of [500.001, Infinity, NaN, Number.MAX_SAFE_INTEGER]) expect(topupAmountSchema.safeParse(amount).success).toBe(false); });
   it("does not accept browser email, reference or user ownership", () => expect(topupInputSchema.safeParse({ amount: 1000, userId: "other", reference: "other", email: "other@example.test" }).success).toBe(false));
   it("accepts only successful matching NGN payments", () => {
