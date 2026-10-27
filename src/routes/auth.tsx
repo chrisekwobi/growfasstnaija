@@ -7,7 +7,7 @@ import { useAccount } from "@/components/account-controls";
 import { orderReturnSchema } from "@/lib/order-validation";
 
 export const Route = createFileRoute("/auth")({
-  validateSearch: (search: Record<string, unknown>) => ({ mode: search["mode"] === "signup" ? "signup" : "login", order: orderReturnSchema.parse(search["order"]) }),
+  validateSearch: (search: Record<string, unknown>): { mode: string; order?: string | undefined } => ({ mode: search["mode"] === "signup" ? "signup" : "login", order: orderReturnSchema.parse(search["order"]) }),
   head: () => pageHead("Login or Create Your Account | GROW FAST", "Sign in to your Grow Fast account or register securely with your email and password."),
   component: AuthPage,
 });

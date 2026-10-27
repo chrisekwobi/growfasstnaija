@@ -4,7 +4,7 @@ import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { orderInputSchema, validateCreditOrder } from "@/lib/order-validation";
 
 const reservationSchema = z.object({ error: z.string().optional(), insufficient: z.boolean().optional(), balance: z.number().optional(), cost: z.number().optional(), order_id: z.string().optional(), status: z.string().optional(), existing: z.boolean().optional(), nitro_service_id: z.string().optional(), platform: z.string().optional() });
-export type PlaceOrderResult = { success: boolean; message: string; balance?: number; insufficient?: boolean; orderId?: string; pending?: boolean };
+export type PlaceOrderResult = { success: boolean; message: string; balance?: number | undefined; insufficient?: boolean | undefined; orderId?: string | undefined; pending?: boolean | undefined };
 
 export const placeOrder = createServerFn({ method: "POST" }).middleware([requireSupabaseAuth])
   .inputValidator((input: unknown) => orderInputSchema.parse(input))

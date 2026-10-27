@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { orderReturnSchema } from "@/lib/order-validation";
 
 export const Route = createFileRoute("/top-up")({
-  validateSearch: (search: Record<string, unknown>) => ({ order: orderReturnSchema.parse(search["order"]) }),
+  validateSearch: (search: Record<string, unknown>): { order?: string | undefined } => ({ order: orderReturnSchema.parse(search["order"]) }),
   head: () => pageHead("Add Account Credits | GROW FAST", "Add credits for Grow Fast social media services. Online top-ups are not available yet."),
   component: TopUp,
 });
