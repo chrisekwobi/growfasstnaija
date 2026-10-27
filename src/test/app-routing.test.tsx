@@ -22,6 +22,7 @@ describe("App routing", () => {
       "/reset-password",
       "/admin",
       "/top-up",
+      "/payment-callback",
       "/services",
       "/services/instagram",
       "/services/tiktok",

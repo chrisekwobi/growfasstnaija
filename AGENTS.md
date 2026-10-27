@@ -10,9 +10,10 @@
 <!-- LOVABLE:END -->
 
 - Keep Grow Fast public-page copy, central package catalogue, and WhatsApp-order logic in reusable shared modules so prices and contact details stay consistent across routes.
-- Use shared platform navigation and enquiry/payment steps on public service pages so each platform keeps its context and all orders use one consistent WhatsApp handoff; payment execution remains outside the website.
+- Use shared platform navigation and enquiry/payment steps on legacy public service pages; active catalogue orders use account credits and Paystack checkout funds the shared balance.
 - Use semantic button colour tokens across Button variants so all website actions share the same palette without changing non-button brand accents.
 - Load homepage services through a public server function and TanStack Query; authenticated credit orders use shared platform validation and server-calculated database prices, while legacy draft enquiries stay on WhatsApp.
 - Use one root account provider for identity transitions and cache invalidation; Cloud's client-only authenticated layout protects admin navigation and every admin server function independently checks has_role.
 - Sync Nitro metadata through an authenticated Cloud server function and a service-role-only transactional SQL upsert that preserves all owner-controlled pricing and activation fields.
 - Reserve credit orders and ledger debits atomically through service-role-only SQL functions with per-user request IDs; refund explicit provider rejections exactly once and hold ambiguous submissions for review rather than risking duplicate fulfillment.
+- Initialize Paystack payments in authenticated server functions with server-owned references and stored amounts; settle signed webhooks and authenticated provider verification through one service-role-only atomic SQL function so each reference credits once. Keep provider helpers server-only through handler-local imports.

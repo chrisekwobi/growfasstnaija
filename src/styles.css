@@ -269,6 +269,15 @@
 .auth-panel { max-width: 500px; margin-inline: auto; border: 1px solid var(--border); background: var(--card); padding: 2rem; border-radius: 8px; }
 .auth-panel h1, .admin-heading h1 { font-size: 2rem; font-weight: 800; margin-bottom: 1.5rem; }
 .auth-panel > p { line-height: 1.7; margin-block: 1rem; }
+.topup-panel { max-width: 600px; margin-inline: auto; }
+.topup-panel h1 { font-size: 2.25rem; font-weight: 800; margin-block: .75rem 1rem; }
+.topup-panel > p { line-height: 1.7; margin-block: 1rem; }
+.topup-panel .service-order-form { margin-block: 1.5rem; }
+.topup-amounts legend { font-weight: 700; margin-bottom: .8rem; }
+.topup-presets { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: .8rem; }
+.topup-security { display: flex; gap: .6rem; align-items: flex-start; color: var(--muted-foreground); }
+.topup-security svg { flex-shrink: 0; margin-top: .3rem; color: var(--cyan); }
+@media (max-width: 640px) { .topup-presets { grid-template-columns: repeat(2, minmax(0,1fr)); } .topup-panel .order-estimate { flex-wrap: wrap; } }
 .auth-actions { display: flex; flex-wrap: wrap; gap: .7rem; margin-top: 1.5rem; }
 .auth-actions a { white-space: normal; }
 .auth-notice { padding-block: 1rem; color: var(--lime); line-height: 1.7; }

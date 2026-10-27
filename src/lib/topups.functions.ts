@@ -17,7 +17,7 @@ export const initializeTopup = createServerFn({ method: "POST" }).middleware([re
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const saved = await supabaseAdmin.from("credit_topups").insert({ reference, user_id: context.userId, email: profile.email, amount_kobo: amount, order_service_id: data.order ?? null });
     if (saved.error) throw new Error("Could not prepare your top-up. Please retry.");
-    const result = z.object({ status: z.literal(true), data: z.object({ authorization_url: z.string().url(), reference: topupReferenceSchema }) }).safeParse(await paystackRequest("/transaction/initialize", { email: profile.email, amount, currency: "NGN", reference, callback_url: `${origin}/top-up/callback` }));
+    const result = z.object({ status: z.literal(true), data: z.object({ authorization_url: z.string().url(), reference: topupReferenceSchema }) }).safeParse(await paystackRequest("/transaction/initialize", { email: profile.email, amount, currency: "NGN", reference, callback_url: `${origin}/payment-callback` }));
     if (!result.success || result.data.data.reference !== reference) throw new Error("Could not open checkout. Please retry.");
     const url = new URL(result.data.data.authorization_url);
     if (url.protocol !== "https:" || url.hostname !== "checkout.paystack.com" || url.username || url.password) throw new Error("Checkout could not be opened safely. Please retry.");

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Route as HomeRoute } from "@/routes/index";
-import { useNavigate } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import { useAccount } from "@/components/account-controls";
 import { CreditOrderDialog } from "@/components/credit-order-dialog";
 import { activeServicesQuery } from "@/lib/services-query";
@@ -41,13 +41,12 @@ export function HomeServiceCatalogue() {
       })}</div>
     </nav>
     <section className="page-wrap beginner-steps" id="how-it-works" aria-labelledby="how-title">
-      <div className="steps-heading"><h2 id="how-title">How it works</h2><span>Credit top-ups · coming soon</span></div>
+      <div className="steps-heading"><h2 id="how-title">How it works</h2><Button asChild><Link to="/top-up">Add credits</Link></Button></div>
       <ol className="beginner-step-grid">
         <li><span className="beginner-number">1</span><UserRoundPlus aria-hidden="true" /><h3>Create account</h3></li>
         <li><span className="beginner-number">2</span><Wallet aria-hidden="true" /><h3>Add credits</h3></li>
         <li><span className="beginner-number">3</span><Check aria-hidden="true" /><h3>Pick a service and paste your link</h3></li>
       </ol>
-      <p>Create your account using Login / Sign up above. Orders use your existing credit balance; online credit top-ups are not enabled yet.</p>
     </section>
     <section className="page-wrap home-catalogue" id="services" aria-labelledby="services-title">
       <div className="catalogue-heading"><div><span className="eyebrow">Choose your platform</span><h2 id="services-title">Services</h2></div><p><Bookmark aria-hidden="true" /> Confirm availability before payment</p></div>
