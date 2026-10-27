@@ -1,7 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import { topupInputSchema, topupReferenceSchema, toKobo } from "@/lib/topup-validation";
+import { paystackTransactionSchema, topupInputSchema, topupReferenceSchema, toKobo } from "@/lib/topup-validation";
 
 export const initializeTopup = createServerFn({ method: "POST" }).middleware([requireSupabaseAuth])
   .inputValidator((input: unknown) => topupInputSchema.parse(input))
@@ -32,6 +32,8 @@ export const verifyTopup = createServerFn({ method: "POST" }).middleware([requir
     const { paystackRequest, settleVerifiedPayment } = await import("@/lib/paystack.server");
     const verified = z.object({ status: z.literal(true), data: z.unknown() }).safeParse(await paystackRequest(`/transaction/verify/${encodeURIComponent(data.reference)}`));
     if (!verified.success) throw new Error("Payment could not be verified yet. Please check again.");
-    const result = await settleVerifiedPayment(verified.data.data);
+    const transaction = paystackTransactionSchema.safeParse(verified.data.data);
+    if (!transaction.success || transaction.data.reference !== data.reference) throw new Error("Payment details do not match this top-up. Please contact support.");
+    const result = await settleVerifiedPayment(transaction.data);
     return { ...result, order: topup.order_service_id ?? undefined };
   });

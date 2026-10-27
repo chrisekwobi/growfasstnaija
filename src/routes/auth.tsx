@@ -8,7 +8,7 @@ import { orderReturnSchema } from "@/lib/order-validation";
 import { topupReferenceSchema } from "@/lib/topup-validation";
 
 export const Route = createFileRoute("/auth")({
-  validateSearch: (search: Record<string, unknown>) => ({ mode: search["mode"] === "signup" ? "signup" : "login", order: orderReturnSchema.parse(search["order"]), next: search["next"] === "top-up" || search["next"] === "payment-callback" ? search["next"] : undefined, reference: topupReferenceSchema.safeParse(search["reference"]).data }),
+  validateSearch: (search: Record<string, unknown>): { mode: string; order?: string | undefined; next?: string | undefined; reference?: string | undefined } => ({ mode: search["mode"] === "signup" ? "signup" : "login", order: orderReturnSchema.parse(search["order"]), next: search["next"] === "top-up" || search["next"] === "payment-callback" ? search["next"] : undefined, reference: topupReferenceSchema.safeParse(search["reference"]).data }),
   head: () => pageHead("Login or Create Your Account | GROW FAST", "Sign in to your Grow Fast account or register securely with your email and password."),
   component: AuthPage,
 });
