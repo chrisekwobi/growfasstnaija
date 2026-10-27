@@ -1,0 +1,74 @@
+import { useState, type FormEvent } from "react";
+import { ArrowRight, Bookmark, Check, Facebook, Heart, Instagram, MessageCircle, Music2, Send, Twitter, UserRoundPlus, Wallet, Youtube } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { formatNaira, generalWhatsAppMessage, whatsappUrl } from "@/lib/glowfast";
+import { cataloguePlatforms, catalogueServices, sampleOrderTotal, serviceOrderMessage, validateServiceOrder, type CatalogueService } from "@/lib/service-catalogue";
+
+const platformIcons = { video: Music2, instagram: Instagram, facebook: Facebook, youtube: Youtube, twitter: Twitter, telegram: Send };
+
+export function HomeServiceCatalogue() {
+  const [selected, setSelected] = useState<CatalogueService | null>(null);
+  const [quantity, setQuantity] = useState("1000");
+  const [link, setLink] = useState("");
+  const [error, setError] = useState("");
+  const selectService = (service: CatalogueService) => { setSelected(service); setQuantity("1000"); setLink(""); setError(""); };
+  const submit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (!selected) return;
+    const issue = validateServiceOrder(selected, Number(quantity), link.trim());
+    if (issue) { setError(issue); return; }
+    window.open(whatsappUrl(serviceOrderMessage(selected, Number(quantity), link.trim())), "_blank", "noopener,noreferrer");
+    setSelected(null);
+  };
+
+  return <>
+    <nav className="platform-jumps" aria-label="Jump to platform services">
+      <div className="page-wrap jump-inner">{cataloguePlatforms.map((platform) => {
+        const Icon = platformIcons[platform.icon];
+        return <Button asChild key={platform.id}><a href={`#${platform.id}`}><Icon aria-hidden="true" />{platform.name}</a></Button>;
+      })}</div>
+    </nav>
+    <section className="page-wrap beginner-steps" id="how-it-works" aria-labelledby="how-title">
+      <div className="steps-heading"><h2 id="how-title">How it works</h2><span>Accounts & credits · coming soon</span></div>
+      <ol className="beginner-step-grid">
+        <li><span className="beginner-number">1</span><UserRoundPlus aria-hidden="true" /><h3>Create account</h3></li>
+        <li><span className="beginner-number">2</span><Wallet aria-hidden="true" /><h3>Add credits</h3></li>
+        <li><span className="beginner-number">3</span><Check aria-hidden="true" /><h3>Pick a service and paste your link</h3></li>
+      </ol>
+      <p>For now, orders and payment instructions are confirmed with our team on WhatsApp. No account or credits required.</p>
+    </section>
+    <section className="page-wrap home-catalogue" id="services" aria-labelledby="services-title">
+      <div className="catalogue-heading"><div><span className="eyebrow">Choose your platform</span><h2 id="services-title">Services</h2></div><p><Bookmark aria-hidden="true" /> Sample catalogue · prices are not confirmed offers</p></div>
+      {cataloguePlatforms.map((platform) => {
+        const Icon = platformIcons[platform.icon];
+        const services = catalogueServices.filter((service) => service.platform === platform.name);
+        return <section className={`platform-panel platform-${platform.id}`} id={platform.id} key={platform.id} aria-labelledby={`${platform.id}-title`}>
+          <header className="platform-panel-heading"><div><span className="platform-emblem"><Icon size={28} aria-hidden="true" /></span><h3 id={`${platform.id}-title`}>{platform.name}</h3></div><span>{services.length} sample services</span></header>
+          <div className="service-tile-grid">{services.map((service) => <article className="service-tile" key={service.id}>
+            <span className="service-type">{service.type}</span>
+            <h4>{service.name}</h4>
+            <p className="service-rate">{formatNaira(service.pricePerThousand)} <span>per 1,000</span></p>
+            <dl><div><dt>Min quantity</dt><dd>{service.min.toLocaleString("en-NG")}</dd></div><div><dt>Max quantity</dt><dd>{service.max.toLocaleString("en-NG")}</dd></div></dl>
+            <Button onClick={() => selectService(service)} aria-label={`Order now: ${service.name}`}>Order now <ArrowRight aria-hidden="true" /></Button>
+          </article>)}</div>
+        </section>;
+      })}
+      <p className="catalogue-safety">All services, rates and quantity limits are editable examples. Confirm availability and platform rules before payment. No guaranteed growth or earnings. Never share passwords or login codes.</p>
+    </section>
+    <Button asChild className="floating-support"><a href={whatsappUrl(generalWhatsAppMessage)} target="_blank" rel="noreferrer"><MessageCircle aria-hidden="true" />Chat with us</a></Button>
+    <Dialog open={selected !== null} onOpenChange={(open) => { if (!open) setSelected(null); }}>
+      <DialogContent className="service-order-dialog">
+        <DialogHeader><DialogTitle>Order {selected?.name}</DialogTitle><DialogDescription>Sample price only. Confirm your order and payment instructions on WhatsApp before paying.</DialogDescription></DialogHeader>
+        {selected && <form onSubmit={submit} className="service-order-form">
+          <label htmlFor="order-quantity">Quantity<input id="order-quantity" className="field-control" type="number" required min={selected.min} max={selected.max} step="1" value={quantity} onChange={(event) => setQuantity(event.target.value)} /></label>
+          <p>{selected.min.toLocaleString("en-NG")}–{selected.max.toLocaleString("en-NG")} · {formatNaira(selected.pricePerThousand)} per 1,000</p>
+          <label htmlFor="order-link">Public profile or post link<input id="order-link" className="field-control" type="url" placeholder="https://" required value={link} onChange={(event) => setLink(event.target.value)} /></label>
+          <div className="order-estimate"><span>Sample total</span><strong>{formatNaira(sampleOrderTotal(selected, Number(quantity) || 0))}</strong></div>
+          {error && <p role="alert">{error}</p>}
+          <Button type="submit"><MessageCircle aria-hidden="true" />Continue to WhatsApp</Button>
+        </form>}
+      </DialogContent>
+    </Dialog>
+  </>;
+}
