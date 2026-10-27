@@ -8,3 +8,7 @@
 - [x] Replace homepage cards with a complete, grouped sample service catalogue and sticky platform jumps.
 - [x] Add beginner steps, service ordering, floating support, and accessible contrast.
 - [x] Verify ordering, platform jumps, layout, and catalogue rules.
+- [ ] Add email authentication, reset, logout, and header balance.
+- [ ] Create protected profiles, roles, services, orders, and credit transactions.
+- [ ] Add admin service editing and price-preserving Nitro sync.
+- [ ] Load homepage services from Cloud and verify auth, RLS, and admin flows.
