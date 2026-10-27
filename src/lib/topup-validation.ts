@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 export const topupPresets = [1000, 2000, 5000, 10000, 20000] as const;
-export const topupAmountSchema = z.number().finite().min(500, "The minimum top-up is ₦500.").refine((amount) => Number.isSafeInteger(amount * 100), "Enter an amount with no more than two decimal places.");
+export const topupAmountSchema = z.number().finite().min(500, "The minimum top-up is ₦500.").refine((amount) => Number.isSafeInteger(Math.round(amount * 100)) && Math.abs(amount * 100 - Math.round(amount * 100)) < 0.000001, "Enter an amount with no more than two decimal places.");
 export const topupReferenceSchema = z.string().regex(/^gf_[a-f0-9]{32}$/, "This payment reference is not valid.");
 export const topupInputSchema = z.object({ amount: topupAmountSchema, order: z.string().uuid().optional() }).strict();
 export const toKobo = (amount: number) => Math.round(topupAmountSchema.parse(amount) * 100);
