@@ -14,16 +14,186 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      credit_transactions: {
+        Row: {
+          amount: number
+          created_at: string
+          id: string
+          reference: string
+          type: string
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          id?: string
+          reference: string
+          type: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          id?: string
+          reference?: string
+          type?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "credit_transactions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      orders: {
+        Row: {
+          cost_credits: number
+          created_at: string
+          id: string
+          link: string
+          nitro_order_id: string | null
+          quantity: number
+          service_id: string
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          cost_credits: number
+          created_at?: string
+          id?: string
+          link: string
+          nitro_order_id?: string | null
+          quantity: number
+          service_id: string
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          cost_credits?: number
+          created_at?: string
+          id?: string
+          link?: string
+          nitro_order_id?: string | null
+          quantity?: number
+          service_id?: string
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "orders_service_id_fkey"
+            columns: ["service_id"]
+            isOneToOne: false
+            referencedRelation: "services"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "orders_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          credits_balance: number
+          email: string
+          id: string
+        }
+        Insert: {
+          credits_balance?: number
+          email?: string
+          id: string
+        }
+        Update: {
+          credits_balance?: number
+          email?: string
+          id?: string
+        }
+        Relationships: []
+      }
+      services: {
+        Row: {
+          active: boolean
+          category: string
+          id: string
+          markup_percent: number
+          max_qty: number
+          min_qty: number
+          name: string
+          nitro_rate_usd: number
+          nitro_service_id: string
+          platform: string
+          price_per_1000_ngn: number
+        }
+        Insert: {
+          active?: boolean
+          category?: string
+          id?: string
+          markup_percent?: number
+          max_qty?: number
+          min_qty?: number
+          name: string
+          nitro_rate_usd?: number
+          nitro_service_id: string
+          platform?: string
+          price_per_1000_ngn?: number
+        }
+        Update: {
+          active?: boolean
+          category?: string
+          id?: string
+          markup_percent?: number
+          max_qty?: number
+          min_qty?: number
+          name?: string
+          nitro_rate_usd?: number
+          nitro_service_id?: string
+          platform?: string
+          price_per_1000_ngn?: number
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
+      upsert_nitro_services: { Args: { _services: Json }; Returns: number }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "user"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +320,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "user"],
+    },
   },
 } as const
