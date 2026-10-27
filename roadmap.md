@@ -5,6 +5,6 @@
 - [x] Make WhatsApp-first enquiries and payment instructions explicit.
 - [x] Display clearly labelled social-platform links and unify orange buttons.
 - [x] Verify platform navigation and WhatsApp package enquiries.
-- [ ] Replace homepage cards with a complete, grouped sample service catalogue and sticky platform jumps.
-- [ ] Add beginner steps, service ordering, floating support, and accessible contrast.
-- [ ] Verify ordering, platform jumps, layout, and catalogue rules.
+- [x] Replace homepage cards with a complete, grouped sample service catalogue and sticky platform jumps.
+- [x] Add beginner steps, service ordering, floating support, and accessible contrast.
+- [x] Verify ordering, platform jumps, layout, and catalogue rules.
