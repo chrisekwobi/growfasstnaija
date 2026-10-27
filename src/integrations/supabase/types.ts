@@ -57,6 +57,7 @@ export type Database = {
           link: string
           nitro_order_id: string | null
           quantity: number
+          request_id: string | null
           service_id: string
           status: string
           updated_at: string
@@ -69,6 +70,7 @@ export type Database = {
           link: string
           nitro_order_id?: string | null
           quantity: number
+          request_id?: string | null
           service_id: string
           status?: string
           updated_at?: string
@@ -81,6 +83,7 @@ export type Database = {
           link?: string
           nitro_order_id?: string | null
           quantity?: number
+          request_id?: string | null
           service_id?: string
           status?: string
           updated_at?: string
@@ -189,6 +192,20 @@ export type Database = {
           _user_id: string
         }
         Returns: boolean
+      }
+      refund_credit_order: {
+        Args: { _order_id: string; _user_id: string }
+        Returns: number
+      }
+      reserve_credit_order: {
+        Args: {
+          _link: string
+          _quantity: number
+          _request_id: string
+          _service_id: string
+          _user_id: string
+        }
+        Returns: Json
       }
       upsert_nitro_services: { Args: { _services: Json }; Returns: number }
     }
