@@ -24,7 +24,7 @@ export function HomeServiceCatalogue() {
     if (!selected) return;
     const issue = validateServiceOrder(selected, Number(quantity), link.trim());
     if (issue) { setError(issue); return; }
-    window.open(whatsappUrl(serviceOrderMessage(selected, Number(quantity), link.trim())), "_blank", "noopener,noreferrer");
+    window.open(whatsappUrl(serviceOrderMessage(selected, Number(quantity), link.trim(), false)), "_blank", "noopener,noreferrer");
     setSelected(null);
   };
 

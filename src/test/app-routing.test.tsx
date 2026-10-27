@@ -18,6 +18,9 @@ describe("App routing", () => {
   it("matches every requested Grow Fast content page", () => {
     const router = createRouter({ routeTree, context: { queryClient: new QueryClient() } });
     const paths = [
+      "/auth",
+      "/reset-password",
+      "/admin",
       "/services",
       "/services/instagram",
       "/services/tiktok",

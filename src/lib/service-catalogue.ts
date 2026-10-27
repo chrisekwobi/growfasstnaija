@@ -48,5 +48,5 @@ export function validateServiceOrder(service: CatalogueService, quantity: number
   return null;
 }
 
-export const serviceOrderMessage = (service: CatalogueService, quantity: number, link: string) =>
-  `Hello Grow Fast! I would like to order.\n\nPlatform: ${service.platform}\nService: ${service.name}\nQuantity: ${quantity.toLocaleString("en-NG")}\nPublic link: ${link}\nSample rate per 1,000: ${formatNaira(service.pricePerThousand)}\nSample total: ${formatNaira(sampleOrderTotal(service, quantity))} (draft; please confirm)\n\nPlease confirm availability, final price, requirements, delivery and cancellation terms before I pay. Then share payment instructions in this WhatsApp chat. I will not share passwords or login codes.`;
+export const serviceOrderMessage = (service: CatalogueService, quantity: number, link: string, sample = true) =>
+  `Hello Grow Fast! I would like to order.\n\nPlatform: ${service.platform}\nService: ${service.name}\nQuantity: ${quantity.toLocaleString("en-NG")}\nPublic link: ${link}\n${sample ? "Sample rate" : "Rate shown"} per 1,000: ${formatNaira(service.pricePerThousand)}\n${sample ? "Sample total" : "Estimated total"}: ${formatNaira(sampleOrderTotal(service, quantity))} ${sample ? "(draft; please confirm)" : "(please confirm)"}\n\nPlease confirm availability, final price, requirements, delivery and cancellation terms before I pay. Then share payment instructions in this WhatsApp chat. I will not share passwords or login codes.`;
