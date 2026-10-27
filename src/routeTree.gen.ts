@@ -15,6 +15,7 @@ import { Route as AboutRouteImport } from './routes/about'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as FaqRouteImport } from './routes/faq'
+import { Route as PaymentCallbackRouteImport } from './routes/payment-callback'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as TermsRouteImport } from './routes/terms'
@@ -26,6 +27,7 @@ import { Route as ServicesFacebookRouteImport } from './routes/services.facebook
 import { Route as ServicesInstagramRouteImport } from './routes/services.instagram'
 import { Route as ServicesTiktokRouteImport } from './routes/services.tiktok'
 import { Route as ServicesYoutubeRouteImport } from './routes/services.youtube'
+import { Route as ApiPublicPaystackWebhookRouteImport } from './routes/api/public/paystack-webhook'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -54,6 +56,11 @@ const ContactRoute = ContactRouteImport.update({
 const FaqRoute = FaqRouteImport.update({
   id: '/faq',
   path: '/faq',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PaymentCallbackRoute = PaymentCallbackRouteImport.update({
+  id: '/payment-callback',
+  path: '/payment-callback',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PrivacyRoute = PrivacyRouteImport.update({
@@ -111,6 +118,12 @@ const ServicesYoutubeRoute = ServicesYoutubeRouteImport.update({
   path: '/services/youtube',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicPaystackWebhookRoute =
+  ApiPublicPaystackWebhookRouteImport.update({
+    id: '/api/public/paystack-webhook',
+    path: '/api/public/paystack-webhook',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -118,6 +131,7 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
   '/faq': typeof FaqRoute
+  '/payment-callback': typeof PaymentCallbackRoute
   '/privacy': typeof PrivacyRoute
   '/reset-password': typeof ResetPasswordRoute
   '/terms': typeof TermsRoute
@@ -129,6 +143,7 @@ export interface FileRoutesByFullPath {
   '/services/tiktok': typeof ServicesTiktokRoute
   '/services/youtube': typeof ServicesYoutubeRoute
   '/services/': typeof ServicesIndexRoute
+  '/api/public/paystack-webhook': typeof ApiPublicPaystackWebhookRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -136,6 +151,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
   '/faq': typeof FaqRoute
+  '/payment-callback': typeof PaymentCallbackRoute
   '/privacy': typeof PrivacyRoute
   '/reset-password': typeof ResetPasswordRoute
   '/terms': typeof TermsRoute
@@ -147,6 +163,7 @@ export interface FileRoutesByTo {
   '/services/tiktok': typeof ServicesTiktokRoute
   '/services/youtube': typeof ServicesYoutubeRoute
   '/services': typeof ServicesIndexRoute
+  '/api/public/paystack-webhook': typeof ApiPublicPaystackWebhookRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -156,6 +173,7 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
   '/faq': typeof FaqRoute
+  '/payment-callback': typeof PaymentCallbackRoute
   '/privacy': typeof PrivacyRoute
   '/reset-password': typeof ResetPasswordRoute
   '/terms': typeof TermsRoute
@@ -167,6 +185,7 @@ export interface FileRoutesById {
   '/services/tiktok': typeof ServicesTiktokRoute
   '/services/youtube': typeof ServicesYoutubeRoute
   '/services/': typeof ServicesIndexRoute
+  '/api/public/paystack-webhook': typeof ApiPublicPaystackWebhookRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -176,6 +195,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/contact'
     | '/faq'
+    | '/payment-callback'
     | '/privacy'
     | '/reset-password'
     | '/terms'
@@ -187,6 +207,7 @@ export interface FileRouteTypes {
     | '/services/tiktok'
     | '/services/youtube'
     | '/services/'
+    | '/api/public/paystack-webhook'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -194,6 +215,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/contact'
     | '/faq'
+    | '/payment-callback'
     | '/privacy'
     | '/reset-password'
     | '/terms'
@@ -205,6 +227,7 @@ export interface FileRouteTypes {
     | '/services/tiktok'
     | '/services/youtube'
     | '/services'
+    | '/api/public/paystack-webhook'
   id:
     | '__root__'
     | '/'
@@ -213,6 +236,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/contact'
     | '/faq'
+    | '/payment-callback'
     | '/privacy'
     | '/reset-password'
     | '/terms'
@@ -224,6 +248,7 @@ export interface FileRouteTypes {
     | '/services/tiktok'
     | '/services/youtube'
     | '/services/'
+    | '/api/public/paystack-webhook'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -233,6 +258,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   ContactRoute: typeof ContactRoute
   FaqRoute: typeof FaqRoute
+  PaymentCallbackRoute: typeof PaymentCallbackRoute
   PrivacyRoute: typeof PrivacyRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   TermsRoute: typeof TermsRoute
@@ -243,6 +269,7 @@ export interface RootRouteChildren {
   ServicesTiktokRoute: typeof ServicesTiktokRoute
   ServicesYoutubeRoute: typeof ServicesYoutubeRoute
   ServicesIndexRoute: typeof ServicesIndexRoute
+  ApiPublicPaystackWebhookRoute: typeof ApiPublicPaystackWebhookRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -287,6 +314,13 @@ declare module '@tanstack/react-router' {
       path: '/faq'
       fullPath: '/faq'
       preLoaderRoute: typeof FaqRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/payment-callback': {
+      id: '/payment-callback'
+      path: '/payment-callback'
+      fullPath: '/payment-callback'
+      preLoaderRoute: typeof PaymentCallbackRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/privacy': {
@@ -366,6 +400,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ServicesYoutubeRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/paystack-webhook': {
+      id: '/api/public/paystack-webhook'
+      path: '/api/public/paystack-webhook'
+      fullPath: '/api/public/paystack-webhook'
+      preLoaderRoute: typeof ApiPublicPaystackWebhookRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -387,6 +428,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   ContactRoute: ContactRoute,
   FaqRoute: FaqRoute,
+  PaymentCallbackRoute: PaymentCallbackRoute,
   PrivacyRoute: PrivacyRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   TermsRoute: TermsRoute,
@@ -397,6 +439,7 @@ const rootRouteChildren: RootRouteChildren = {
   ServicesTiktokRoute: ServicesTiktokRoute,
   ServicesYoutubeRoute: ServicesYoutubeRoute,
   ServicesIndexRoute: ServicesIndexRoute,
+  ApiPublicPaystackWebhookRoute: ApiPublicPaystackWebhookRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
