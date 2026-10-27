@@ -1,8 +1,9 @@
-import { useEffect, useState, type FormEvent } from "react";
+import { useState, type FormEvent } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { SiteFrame, pageHead } from "@/components/glowfast-site";
+import { useAccount } from "@/components/account-controls";
 
 export const Route = createFileRoute("/reset-password")({
   head: () => pageHead("Reset Your Password | GROW FAST", "Choose a new password securely using your Grow Fast password recovery email."),
@@ -10,22 +11,10 @@ export const Route = createFileRoute("/reset-password")({
 });
 
 function ResetPassword() {
-  const [recovery, setRecovery] = useState(false);
+  const { recovery } = useAccount();
   const [busy, setBusy] = useState(false);
   const [notice, setNotice] = useState("");
   const [done, setDone] = useState(false);
-  useEffect(() => {
-    const hash = new URLSearchParams(window.location.hash.slice(1));
-    const isRecovery = hash.get("type") === "recovery";
-    if (isRecovery) {
-      void supabase.auth.getUser().then(({ data }) => setRecovery(Boolean(data.user)));
-    }
-    // The generated client consumes recovery hash tokens; wait for its existing auth flow.
-    const timer = window.setTimeout(() => {
-      if (isRecovery) void supabase.auth.getUser().then(({ data }) => setRecovery(Boolean(data.user)));
-    }, 800);
-    return () => window.clearTimeout(timer);
-  }, []);
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const values = new FormData(event.currentTarget);

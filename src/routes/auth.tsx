@@ -6,7 +6,7 @@ import { pageHead, SiteFrame } from "@/components/glowfast-site";
 import { useAccount } from "@/components/account-controls";
 
 export const Route = createFileRoute("/auth")({
-  validateSearch: (search: Record<string, unknown>) => ({ mode: search.mode === "signup" ? "signup" : "login" }),
+  validateSearch: (search: Record<string, unknown>) => ({ mode: search["mode"] === "signup" ? "signup" : "login" }),
   head: () => pageHead("Login or Create Your Account | GROW FAST", "Sign in to your Grow Fast account or register securely with your email and password."),
   component: AuthPage,
 });

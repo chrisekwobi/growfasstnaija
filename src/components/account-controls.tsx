@@ -7,30 +7,33 @@ import { Button } from "@/components/ui/button";
 import { LogOut, Wallet } from "lucide-react";
 import { formatNaira } from "@/lib/glowfast";
 
-const AccountContext = createContext<{ user: User | null; loading: boolean }>({ user: null, loading: true });
+const AccountContext = createContext<{ user: User | null; loading: boolean; recovery: boolean }>({ user: null, loading: true, recovery: false });
 export const useAccount = () => useContext(AccountContext);
 
 export function AccountProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const [recovery, setRecovery] = useState(false);
   const router = useRouter();
   const queryClient = useQueryClient();
   useEffect(() => {
     let mounted = true;
+    const recoveryHash = new URLSearchParams(window.location.hash.slice(1)).get("type") === "recovery";
     const { data: listener } = supabase.auth.onAuthStateChange((event, session) => {
       if (event === "INITIAL_SESSION") {
-        void supabase.auth.getUser().then(({ data }) => { if (mounted) { setUser(data.user); setLoading(false); } });
+        void supabase.auth.getUser().then(({ data }) => { if (mounted) { setUser(data.user); setLoading(false); if (recoveryHash && data.user) setRecovery(true); } });
         return;
       }
+      if (event === "PASSWORD_RECOVERY") { setRecovery(true); setUser(session?.user ?? null); setLoading(false); return; }
       if (!["SIGNED_IN", "SIGNED_OUT", "USER_UPDATED"].includes(event)) return;
       setUser(session?.user ?? null); setLoading(false);
-      if (event === "SIGNED_OUT") { void queryClient.cancelQueries(); queryClient.clear(); }
+      if (event === "SIGNED_OUT") { setRecovery(false); void queryClient.cancelQueries(); queryClient.clear(); }
       void router.invalidate();
       if (event !== "SIGNED_OUT") void queryClient.invalidateQueries();
     });
     return () => { mounted = false; listener.subscription.unsubscribe(); };
   }, [queryClient, router]);
-  return <AccountContext.Provider value={{ user, loading }}>{children}</AccountContext.Provider>;
+  return <AccountContext.Provider value={{ user, loading, recovery }}>{children}</AccountContext.Provider>;
 }
 
 export function AccountControls() {
@@ -54,7 +57,7 @@ export function AccountControls() {
     await queryClient.cancelQueries(); queryClient.clear();
     const { error } = await supabase.auth.signOut();
     if (error) { setNotice("Could not log out. Please retry."); return; }
-    await navigate({ to: "/auth", replace: true });
+    await navigate({ to: "/auth", search: { mode: "login" }, replace: true });
   }
   if (loading) return <span className="account-loading" aria-live="polite">Account…</span>;
   return <div className="account-controls">
