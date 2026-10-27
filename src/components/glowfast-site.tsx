@@ -23,6 +23,7 @@ import {
   X,
   Youtube,
 } from "lucide-react";
+import { HomeServiceCatalogue } from "@/components/home-service-catalogue";
 import heroArt from "@/assets/glowfast-social-visual.jpg";
 import { Button } from "@/components/ui/button";
 import {
@@ -98,7 +99,7 @@ export function SiteHeader() {
         </div>
         <Button asChild className="desktop-order">
           <a href={whatsappUrl(generalWhatsAppMessage)} target="_blank" rel="noreferrer">
-            <MessageCircle aria-hidden="true" /> Order on WhatsApp
+            <MessageCircle aria-hidden="true" /> Order now
           </a>
         </Button>
         <Button
@@ -123,7 +124,7 @@ export function SiteHeader() {
           <Link onClick={() => setMenuOpen(false)} to="/faq">FAQ</Link>
           <Button asChild className="mt-2">
             <a href={whatsappUrl(generalWhatsAppMessage)} target="_blank" rel="noreferrer">
-              <MessageCircle aria-hidden="true" /> Order on WhatsApp
+              <MessageCircle aria-hidden="true" /> Order now
             </a>
           </Button>
         </div>
@@ -225,7 +226,7 @@ export function PackageCard({ item }: { item: ServicePackage }) {
       <p className="package-meta"><strong>{item.quantity}</strong><br />{item.delivery}</p>
       <div className="package-button">
         <WhatsAppButton message={packageOrderMessage(item)} variant={item.featured ? "default" : "outline"}>
-          <MessageCircle aria-hidden="true" /> Ask about this package
+          <MessageCircle aria-hidden="true" /> Order now
         </WhatsAppButton>
       </div>
       <p className="package-disclaimer">Draft example only. Confirm current price, availability, requirements and delivery before payment. Never share passwords or login codes.</p>
@@ -241,14 +242,6 @@ function ServiceCard({ item }: { item: (typeof platformPages)[number] }) {
       <p>{item.description}</p>
       <Button asChild className="mt-auto"><Link to={item.path}>View packages <ArrowRight size={16} aria-hidden="true" /></Link></Button>
     </article>
-  );
-}
-
-function HomePackages() {
-  return (
-    <div className="package-grid">
-      {packages.slice(0, 3).map((item) => <PackageCard key={item.id} item={item} />)}
-    </div>
   );
 }
 
@@ -284,69 +277,18 @@ function FinalCta() {
 }
 
 export function HomePage() {
-  const benefits = [
-    [MessageCircle, "Easy ordering", "Choose a service and continue directly to WhatsApp."],
-    [Eye, "Transparent details", "Explore sample quantities and see what needs confirmation."],
-    [Share2, "Multiple platforms", "Browse services for popular social platforms in one place."],
-    [Check, "Simple experience", "A straightforward path from browsing to enquiry."],
-    [ShieldCheck, "Support by enquiry", "Ask the team to confirm details before you proceed."],
-    [Sparkles, "Flexible examples", "Review draft options that can be adjusted when official offers are confirmed."],
-  ] as const;
-  const useCases = ["Music promotion and artist visibility", "Content creators and influencers", "Business pages and product awareness", "YouTube video promotion", "Short-form video creators", "Brand engagement campaigns"];
-
   return (
-    <main>
-      <section className="page-wrap hero-section" aria-labelledby="home-title">
+    <main className="beginner-home">
+      <section className="home-intro page-wrap" aria-labelledby="home-title">
         <div>
-          <Eyebrow>Social media services · Nigeria</Eyebrow>
-          <h1 id="home-title" className="hero-title"><span className="text-glow">Grow fast</span> and monetize your social media.</h1>
-          <p className="hero-copy">Social media marketing for creators, businesses and brands. Enquire on WhatsApp, agree your service and final price, then receive payment instructions in the same chat.</p>
-          <div className="hero-actions">
-            <Button asChild><Link to="/services">Explore packages <ArrowRight aria-hidden="true" /></Link></Button>
-            <WhatsAppButton message={generalWhatsAppMessage} variant="outline"><MessageCircle aria-hidden="true" /> Chat with us</WhatsAppButton>
-          </div>
-          <p className="hero-caption"><Star size={15} aria-hidden="true" /> Your next growth move starts here.</p>
+          <span className="eyebrow">GROW FAST · Social media services</span>
+          <h1 id="home-title">Grow fast and monetize your social media.</h1>
+          <p>Choose a platform, find your service, and place your order.</p>
+          <Button asChild><a href="#services">Choose a service <ArrowRight aria-hidden="true" /></a></Button>
         </div>
-        <div className="hero-art-wrap">
-          <img className="hero-art" src={heroArt} alt="Original digital illustration of a phone with an upward chart and social engagement symbols" width={1024} height={1024} fetchPriority="high" />
-          <div className="art-note"><BarChart3 size={18} className="art-note-icon" aria-hidden="true" /><span>Made for your next big idea</span></div>
-        </div>
+        <img src={heroArt} alt="Grow Fast social media illustration with a phone and growth chart" width={1024} height={1024} fetchPriority="high" />
       </section>
-      <div className="page-wrap"><PlatformNavigation /></div>
-
-      <section className="page-wrap section" aria-labelledby="services-title">
-        <SectionHeading eyebrow="Explore the catalogue" title="Everything you need to grow online" copy="Browse service examples for your favourite platforms. Availability and terms should be confirmed before ordering." />
-        <div className="service-grid">{platformPages.map((item) => <ServiceCard key={`${item.name}-${item.slug}`} item={item} />)}</div>
-      </section>
-
-      <section className="page-wrap section" id="packages" aria-labelledby="packages-title">
-        <SectionHeading eyebrow="Package examples" title="Find your perfect growth package" copy="All prices and quantities below are editable sample values, not confirmed offers." />
-        <HomePackages />
-      </section>
-
-      <section className="page-wrap section" aria-labelledby="benefits-title">
-        <SectionHeading eyebrow="The Grow Fast approach" title="A simpler way to get started" copy="Explore your options, then speak directly with the team to confirm what is currently available." />
-        <div className="feature-grid">
-          {benefits.map(([Icon, title, copy]) => <div className="feature-item" key={title}><Icon size={21} aria-hidden="true" /><h3>{title}</h3><p>{copy}</p></div>)}
-        </div>
-      </section>
-
-      <section className="page-wrap section" id="how-it-works" aria-labelledby="steps-title">
-        <WhatsAppProcess />
-        <div className="hero-actions"><Button asChild variant="outline"><Link to="/services">Browse all services <ArrowRight aria-hidden="true" /></Link></Button></div>
-      </section>
-
-      <section className="page-wrap section" aria-labelledby="usecases-title">
-        <SectionHeading eyebrow="Who we serve" title="A starting point for every kind of creator" copy="Marketing services may support a range of campaigns; engagement alone does not guarantee customers or organic popularity." />
-        <div className="usecase-grid">{useCases.map((item, index) => <div className="usecase" key={item}>{index % 3 === 0 ? <Music2 /> : index % 3 === 1 ? <Video /> : <Users />}<span>{item}</span></div>)}</div>
-      </section>
-
-      <section className="page-wrap section" aria-labelledby="faq-preview-title">
-        <SectionHeading eyebrow="Good to know" title="Frequently asked questions" />
-        <FaqList limit={6} />
-        <div className="hero-actions"><Button asChild variant="outline"><Link to="/faq">View all FAQs <ArrowRight aria-hidden="true" /></Link></Button></div>
-      </section>
-      <FinalCta />
+      <HomeServiceCatalogue />
     </main>
   );
 }
@@ -404,7 +346,7 @@ export function PlatformPage({ slug }: { slug: string }) {
           <Eyebrow>{item.name} · package examples</Eyebrow>
           <h1 className="section-title">{item.headline}</h1>
           <p className="section-copy">{item.description} Package values below are draft samples. Ask the Grow Fast team to confirm current availability, policy, and delivery before ordering.</p>
-          <div className="hero-actions"><WhatsAppButton message={platformEnquiryMessage(item.name)}><MessageCircle aria-hidden="true" /> Ask about {item.name}</WhatsAppButton><Button asChild variant="outline"><Link to="/services">See all services <ArrowRight aria-hidden="true" /></Link></Button></div>
+          <div className="hero-actions"><WhatsAppButton message={platformEnquiryMessage(item.name)}><MessageCircle aria-hidden="true" /> Order now</WhatsAppButton><Button asChild variant="outline"><Link to="/services">See all services <ArrowRight aria-hidden="true" /></Link></Button></div>
         </div>
         <img className="service-hero-art" src={heroArt} alt={`Original digital illustration representing ${item.name} social media services`} width={1024} height={1024} loading="lazy" />
       </section>

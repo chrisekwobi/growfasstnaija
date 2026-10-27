@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { HomePage, pageHead, SiteFrame } from "@/components/glowfast-site";
 
 export const Route = createFileRoute("/")({
-  head: () => pageHead("Grow Fast | Social Media Marketing Services in Nigeria", "Explore draft Instagram, TikTok, YouTube, Facebook, and social engagement package examples. Confirm availability and pricing with Grow Fast on WhatsApp."),
+  head: () => pageHead("GROW FAST | Social Media Services & Sample Rates in Naira", "Browse all sample TikTok, Instagram, Facebook, YouTube, Twitter/X and Telegram services on one page. Compare rates per 1,000 and order with Grow Fast on WhatsApp."),
   component: HomeRoute,
 });
 
