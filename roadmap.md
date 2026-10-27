@@ -13,3 +13,4 @@
 - [x] Add admin service editing and price-preserving Nitro sync; securely store Nitro credentials.
 - [x] Load homepage services from Cloud and verify public pages, route gates, database grants, and validation tests.
 - [ ] Assign the owner's admin role and verify signed-in balance, admin editing, and live Nitro sync — waiting for the owner to register and identify their account; there are no auth users yet.
+- [ ] Add online payments for a shared credit balance across all platforms — waiting for seller country confirmation and eligible payment setup.
