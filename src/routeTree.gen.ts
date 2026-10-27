@@ -18,6 +18,7 @@ import { Route as FaqRouteImport } from './routes/faq'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as TermsRouteImport } from './routes/terms'
+import { Route as TopUpRouteImport } from './routes/top-up'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as ServicesIndexRouteImport } from './routes/services.index'
 import { Route as ServicesEngagementRouteImport } from './routes/services.engagement'
@@ -70,6 +71,11 @@ const TermsRoute = TermsRouteImport.update({
   path: '/terms',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TopUpRoute = TopUpRouteImport.update({
+  id: '/top-up',
+  path: '/top-up',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
   id: '/admin',
   path: '/admin',
@@ -115,6 +121,7 @@ export interface FileRoutesByFullPath {
   '/privacy': typeof PrivacyRoute
   '/reset-password': typeof ResetPasswordRoute
   '/terms': typeof TermsRoute
+  '/top-up': typeof TopUpRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/services/engagement': typeof ServicesEngagementRoute
   '/services/facebook': typeof ServicesFacebookRoute
@@ -132,6 +139,7 @@ export interface FileRoutesByTo {
   '/privacy': typeof PrivacyRoute
   '/reset-password': typeof ResetPasswordRoute
   '/terms': typeof TermsRoute
+  '/top-up': typeof TopUpRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/services/engagement': typeof ServicesEngagementRoute
   '/services/facebook': typeof ServicesFacebookRoute
@@ -151,6 +159,7 @@ export interface FileRoutesById {
   '/privacy': typeof PrivacyRoute
   '/reset-password': typeof ResetPasswordRoute
   '/terms': typeof TermsRoute
+  '/top-up': typeof TopUpRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/services/engagement': typeof ServicesEngagementRoute
   '/services/facebook': typeof ServicesFacebookRoute
@@ -170,6 +179,7 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/reset-password'
     | '/terms'
+    | '/top-up'
     | '/admin'
     | '/services/engagement'
     | '/services/facebook'
@@ -187,6 +197,7 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/reset-password'
     | '/terms'
+    | '/top-up'
     | '/admin'
     | '/services/engagement'
     | '/services/facebook'
@@ -205,6 +216,7 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/reset-password'
     | '/terms'
+    | '/top-up'
     | '/_authenticated/admin'
     | '/services/engagement'
     | '/services/facebook'
@@ -224,6 +236,7 @@ export interface RootRouteChildren {
   PrivacyRoute: typeof PrivacyRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   TermsRoute: typeof TermsRoute
+  TopUpRoute: typeof TopUpRoute
   ServicesEngagementRoute: typeof ServicesEngagementRoute
   ServicesFacebookRoute: typeof ServicesFacebookRoute
   ServicesInstagramRoute: typeof ServicesInstagramRoute
@@ -295,6 +308,13 @@ declare module '@tanstack/react-router' {
       path: '/terms'
       fullPath: '/terms'
       preLoaderRoute: typeof TermsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/top-up': {
+      id: '/top-up'
+      path: '/top-up'
+      fullPath: '/top-up'
+      preLoaderRoute: typeof TopUpRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/admin': {
@@ -370,6 +390,7 @@ const rootRouteChildren: RootRouteChildren = {
   PrivacyRoute: PrivacyRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   TermsRoute: TermsRoute,
+  TopUpRoute: TopUpRoute,
   ServicesEngagementRoute: ServicesEngagementRoute,
   ServicesFacebookRoute: ServicesFacebookRoute,
   ServicesInstagramRoute: ServicesInstagramRoute,
