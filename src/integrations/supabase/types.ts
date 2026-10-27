@@ -14,6 +14,57 @@ export type Database = {
   }
   public: {
     Tables: {
+      credit_topups: {
+        Row: {
+          amount_kobo: number
+          created_at: string
+          credited_at: string | null
+          currency: string
+          email: string
+          order_service_id: string | null
+          reference: string
+          status: string
+          user_id: string
+        }
+        Insert: {
+          amount_kobo: number
+          created_at?: string
+          credited_at?: string | null
+          currency?: string
+          email: string
+          order_service_id?: string | null
+          reference: string
+          status?: string
+          user_id: string
+        }
+        Update: {
+          amount_kobo?: number
+          created_at?: string
+          credited_at?: string | null
+          currency?: string
+          email?: string
+          order_service_id?: string | null
+          reference?: string
+          status?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "credit_topups_order_service_id_fkey"
+            columns: ["order_service_id"]
+            isOneToOne: false
+            referencedRelation: "services"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "credit_topups_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       credit_transactions: {
         Row: {
           amount: number
@@ -205,6 +256,10 @@ export type Database = {
           _service_id: string
           _user_id: string
         }
+        Returns: Json
+      }
+      settle_paystack_topup: {
+        Args: { _amount_kobo: number; _currency: string; _reference: string }
         Returns: Json
       }
       upsert_nitro_services: { Args: { _services: Json }; Returns: number }
