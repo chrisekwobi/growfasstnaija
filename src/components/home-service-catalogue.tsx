@@ -1,11 +1,14 @@
-import { useState, type FormEvent } from "react";
+import { useState, useEffect } from "react";
 import { useSuspenseQuery } from "@tanstack/react-query";
+import { Route as HomeRoute } from "@/routes/index";
+import { useNavigate } from "@tanstack/react-router";
+import { useAccount } from "@/components/account-controls";
+import { CreditOrderDialog } from "@/components/credit-order-dialog";
 import { activeServicesQuery } from "@/lib/services-query";
 import { ArrowRight, Bookmark, Check, Facebook, Heart, Instagram, MessageCircle, Music2, Send, Twitter, UserRoundPlus, Wallet, Youtube } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { formatNaira, generalWhatsAppMessage, whatsappUrl } from "@/lib/glowfast";
-import { cataloguePlatforms, sampleOrderTotal, serviceOrderMessage, validateServiceOrder, type CatalogueService } from "@/lib/service-catalogue";
+import { cataloguePlatforms, type CatalogueService } from "@/lib/service-catalogue";
 
 const platformIcons = { video: Music2, instagram: Instagram, facebook: Facebook, youtube: Youtube, twitter: Twitter, telegram: Send };
 
@@ -15,18 +18,20 @@ export function HomeServiceCatalogue() {
   const otherPlatforms = [...new Set(catalogueServices.map((service) => service.platform))].filter((name) => !cataloguePlatforms.some((platform) => platform.name === name));
   const displayedPlatforms = [...cataloguePlatforms.map((platform) => ({ id: platform.id as string, name: platform.name as string, icon: platform.icon as string })), ...otherPlatforms.map((name, index) => ({ id: `other-${index}`, name, icon: "telegram" }))];
   const [selected, setSelected] = useState<CatalogueService | null>(null);
-  const [quantity, setQuantity] = useState("1000");
-  const [link, setLink] = useState("");
-  const [error, setError] = useState("");
-  const selectService = (service: CatalogueService) => { setSelected(service); setQuantity("1000"); setLink(""); setError(""); };
-  const submit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    if (!selected) return;
-    const issue = validateServiceOrder(selected, Number(quantity), link.trim());
-    if (issue) { setError(issue); return; }
-    window.open(whatsappUrl(serviceOrderMessage(selected, Number(quantity), link.trim(), false)), "_blank", "noopener,noreferrer");
-    setSelected(null);
+  const { user, loading } = useAccount();
+  const navigate = useNavigate();
+  const { order } = HomeRoute.useSearch();
+  useEffect(() => {
+    if (!order || loading) return;
+    if (!user) { void navigate({ to: "/auth", search: { mode: "login", order } }); return; }
+    const service = rows.find((row) => row.id === order);
+    if (service) setSelected({ id: service.id, platform: service.platform, type: service.category, name: service.name, pricePerThousand: service.price_per_1000_ngn, min: service.min_qty, max: service.max_qty });
+  }, [order, loading, user, rows, navigate]);
+  const selectService = (service: CatalogueService) => {
+    if (!user) { void navigate({ to: "/auth", search: { mode: "login", order: service.id } }); return; }
+    setSelected(service);
   };
+  const closeOrder = () => { setSelected(null); if (order) void navigate({ to: "/", search: {} }); };
 
   return <>
     <nav className="platform-jumps" aria-label="Jump to platform services">
@@ -42,7 +47,7 @@ export function HomeServiceCatalogue() {
         <li><span className="beginner-number">2</span><Wallet aria-hidden="true" /><h3>Add credits</h3></li>
         <li><span className="beginner-number">3</span><Check aria-hidden="true" /><h3>Pick a service and paste your link</h3></li>
       </ol>
-      <p>Create your account using Login / Sign up above. For now, orders and payment instructions are confirmed on WhatsApp; online credit top-ups are not enabled.</p>
+      <p>Create your account using Login / Sign up above. Orders use your existing credit balance; online credit top-ups are not enabled yet.</p>
     </section>
     <section className="page-wrap home-catalogue" id="services" aria-labelledby="services-title">
       <div className="catalogue-heading"><div><span className="eyebrow">Choose your platform</span><h2 id="services-title">Services</h2></div><p><Bookmark aria-hidden="true" /> Confirm availability before payment</p></div>
@@ -64,18 +69,6 @@ export function HomeServiceCatalogue() {
       <p className="catalogue-safety">Confirm availability and platform rules before payment. No guaranteed growth or earnings. Never share passwords or login codes.</p>
     </section>
     <Button asChild className="floating-support"><a href={whatsappUrl(generalWhatsAppMessage)} target="_blank" rel="noreferrer"><MessageCircle aria-hidden="true" />Chat with us</a></Button>
-    <Dialog open={selected !== null} onOpenChange={(open) => { if (!open) setSelected(null); }}>
-      <DialogContent className="service-order-dialog">
-        <DialogHeader><DialogTitle>Order {selected?.name}</DialogTitle><DialogDescription>Confirm your order and payment instructions on WhatsApp before paying. Credits are not deducted by this form.</DialogDescription></DialogHeader>
-        {selected && <form onSubmit={submit} className="service-order-form">
-          <label htmlFor="order-quantity">Quantity<input id="order-quantity" className="field-control" type="number" required min={selected.min} max={selected.max} step="1" value={quantity} onChange={(event) => setQuantity(event.target.value)} /></label>
-          <p>{selected.min.toLocaleString("en-NG")}–{selected.max.toLocaleString("en-NG")} · {formatNaira(selected.pricePerThousand)} per 1,000</p>
-          <label htmlFor="order-link">Public profile or post link<input id="order-link" className="field-control" type="url" placeholder="https://" required value={link} onChange={(event) => setLink(event.target.value)} /></label>
-          <div className="order-estimate"><span>Estimated total</span><strong>{formatNaira(sampleOrderTotal(selected, Number(quantity) || 0))}</strong></div>
-          {error && <p role="alert">{error}</p>}
-          <Button type="submit"><MessageCircle aria-hidden="true" />Continue to WhatsApp</Button>
-        </form>}
-      </DialogContent>
-    </Dialog>
+    {selected && user && <CreditOrderDialog key={selected.id} service={selected} onClose={closeOrder} />}
   </>;
 }

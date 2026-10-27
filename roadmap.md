@@ -14,3 +14,5 @@
 - [x] Load homepage services from Cloud and verify public pages, route gates, database grants, and validation tests.
 - [ ] Assign the owner's admin role and verify signed-in balance, admin editing, and live Nitro sync — waiting for the owner to register and identify their account; there are no auth users yet.
 - [ ] Add online payments for a shared credit balance across all platforms — built-in provider eligibility rejected for Nigeria and this product; waiting for an external provider that approves the business.
+- [x] Implement validated credit ordering, atomic deductions/refunds, Nitro submission, login return, and Add credits entry.
+- [ ] Verify paid-order success/refund end-to-end — waiting for a registered account, funded credits, active Nitro service, and authorization for a real provider order; currently there are no users or services.

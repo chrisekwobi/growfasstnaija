@@ -362,7 +362,7 @@
   .home-intro p { font-size: 1.05rem; }
   .home-intro img { width: 68px; height: 90px; }
   .home-intro .eyebrow { font-size: .8rem; }
-  .platform-jumps { top: 66px; }
+  .platform-jumps { top: 118px; }
   .beginner-step-grid { grid-template-columns: 1fr; gap: .9rem; }
   .service-tile-grid { grid-template-columns: 1fr; }
   .platform-panel-heading h3 { font-size: 1.4rem; }
