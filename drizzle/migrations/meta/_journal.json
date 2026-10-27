@@ -8,6 +8,13 @@
       "when": 1793111020043,
       "tag": "0000_growfast_accounts_services",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1793111459353,
+      "tag": "0001_tighten_growfast_table_grants",
+      "breakpoints": true
     }
   ]
 }
