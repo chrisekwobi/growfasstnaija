@@ -24,6 +24,7 @@ import {
   Youtube,
 } from "lucide-react";
 import { HomeServiceCatalogue } from "@/components/home-service-catalogue";
+import { AccountControls } from "@/components/account-controls";
 import heroArt from "@/assets/glowfast-social-visual.jpg";
 import { Button } from "@/components/ui/button";
 import {
@@ -97,11 +98,7 @@ export function SiteHeader() {
           <Link to="/about">About</Link>
           <Link to="/faq">FAQ</Link>
         </div>
-        <Button asChild className="desktop-order">
-          <a href={whatsappUrl(generalWhatsAppMessage)} target="_blank" rel="noreferrer">
-            <MessageCircle aria-hidden="true" /> Order now
-          </a>
-        </Button>
+        <AccountControls />
         <Button
           variant="outline"
           size="icon"

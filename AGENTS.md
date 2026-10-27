@@ -12,4 +12,6 @@
 - Keep Grow Fast public-page copy, central package catalogue, and WhatsApp-order logic in reusable shared modules so prices and contact details stay consistent across routes.
 - Use shared platform navigation and enquiry/payment steps on public service pages so each platform keeps its context and all orders use one consistent WhatsApp handoff; payment execution remains outside the website.
 - Use semantic button colour tokens across Button variants so all website actions share the same palette without changing non-button brand accents.
-- Keep the homepage sample service catalogue and quantity validation in a browser-safe shared data module; use a shared order dialog that hands off validated public links to WhatsApp until live ordering is enabled.
+- Load homepage services through a public server function and TanStack Query; keep quantity validation shared and WhatsApp ordering separate from future credit execution.
+- Use one root account provider for identity transitions and cache invalidation; Cloud's client-only authenticated layout protects admin navigation and every admin server function independently checks has_role.
+- Sync Nitro metadata through an authenticated Cloud server function and a service-role-only transactional SQL upsert that preserves all owner-controlled pricing and activation fields.

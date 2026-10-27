@@ -1,8 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { HomePage, pageHead, SiteFrame } from "@/components/glowfast-site";
+import { activeServicesQuery } from "@/lib/services-query";
 
 export const Route = createFileRoute("/")({
-  head: () => pageHead("GROW FAST | Social Media Services & Sample Rates in Naira", "Browse all sample TikTok, Instagram, Facebook, YouTube, Twitter/X and Telegram services on one page. Compare rates per 1,000 and order with Grow Fast on WhatsApp."),
+  loader: ({ context }) => context.queryClient.ensureQueryData(activeServicesQuery),
+  head: () => pageHead("GROW FAST | Social Media Services & Rates in Naira", "Browse active Grow Fast social media services. Compare rates per 1,000, create an account and confirm your order on WhatsApp."),
   component: HomeRoute,
 });
 
