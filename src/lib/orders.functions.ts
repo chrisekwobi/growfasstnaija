@@ -9,12 +9,14 @@ export type PlaceOrderResult = { success: boolean; message: string; balance?: nu
 export const placeOrder = createServerFn({ method: "POST" }).middleware([requireSupabaseAuth])
   .inputValidator((input: unknown) => orderInputSchema.parse(input))
   .handler(async ({ data, context }): Promise<PlaceOrderResult> => {
-    const apiUrl = process.env["NITRO_API_URL"];
-    const apiKey = process.env["NITRO_API_KEY"];
+    const apiUrl = process.env["NITRO_API_URL"]?.trim();
+    const apiKey = process.env["NITRO_API_KEY"]?.trim();
     if (!apiUrl || !apiKey) return { success: false, message: "Ordering is temporarily unavailable. No credits were deducted." };
     let url: URL;
     try { url = new URL(apiUrl); if (url.protocol !== "https:") throw new Error(); }
     catch { return { success: false, message: "Ordering is temporarily unavailable. No credits were deducted." }; }
+    const profile = await context.supabase.from("profiles").select("suspended").eq("id", context.userId).single();
+    if (profile.error || profile.data.suspended) return { success: false, message: "Your account is suspended. Contact support before ordering." };
     const { data: service, error } = await context.supabase.from("services").select("platform,min_qty,max_qty,active").eq("id", data.serviceId).single();
     if (error || !service?.active) return { success: false, message: "This service is not available right now." };
     const issue = validateCreditOrder({ platform: service.platform, min: service.min_qty, max: service.max_qty }, data.quantity, data.link);
@@ -30,7 +32,7 @@ export const placeOrder = createServerFn({ method: "POST" }).middleware([require
     // Never resend an ambiguous request: the provider may have accepted before a timeout.
     let payload: unknown;
     try {
-      const response = await fetch(url, { method: "POST", redirect: "error", headers: { "Content-Type": "application/x-www-form-urlencoded" }, body: new URLSearchParams({ key: apiKey, action: "add", service: reservation.nitro_service_id ?? "", link: data.link, quantity: String(data.quantity) }), signal: AbortSignal.timeout(30000) });
+      const response = await fetch(url, { method: "POST", redirect: "manual", headers: { "Content-Type": "application/x-www-form-urlencoded" }, body: new URLSearchParams({ key: apiKey, action: "add", service: reservation.nitro_service_id ?? "", link: data.link, quantity: String(data.quantity) }), signal: AbortSignal.timeout(30000) });
       payload = await response.json();
     } catch {
       await supabaseAdmin.from("orders").update({ status: "submission_unknown" }).eq("id", orderId).eq("user_id", context.userId);

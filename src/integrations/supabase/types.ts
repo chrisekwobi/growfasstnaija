@@ -14,6 +14,72 @@ export type Database = {
   }
   public: {
     Tables: {
+      admin_audit_log: {
+        Row: {
+          action: string
+          actor_email: string | null
+          actor_id: string | null
+          created_at: string
+          entity_id: string | null
+          id: string
+          new_values: Json | null
+          old_values: Json | null
+          reason: string | null
+        }
+        Insert: {
+          action: string
+          actor_email?: string | null
+          actor_id?: string | null
+          created_at?: string
+          entity_id?: string | null
+          id?: string
+          new_values?: Json | null
+          old_values?: Json | null
+          reason?: string | null
+        }
+        Update: {
+          action?: string
+          actor_email?: string | null
+          actor_id?: string | null
+          created_at?: string
+          entity_id?: string | null
+          id?: string
+          new_values?: Json | null
+          old_values?: Json | null
+          reason?: string | null
+        }
+        Relationships: []
+      }
+      admin_settings: {
+        Row: {
+          default_markup: number
+          exchange_rate: number
+          id: number
+          low_balance_threshold: number
+          minimum_topup: number
+          paystack_fee_percent: number
+          updated_at: string
+        }
+        Insert: {
+          default_markup?: number
+          exchange_rate?: number
+          id?: number
+          low_balance_threshold?: number
+          minimum_topup?: number
+          paystack_fee_percent?: number
+          updated_at?: string
+        }
+        Update: {
+          default_markup?: number
+          exchange_rate?: number
+          id?: number
+          low_balance_threshold?: number
+          minimum_topup?: number
+          paystack_fee_percent?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       credit_topups: {
         Row: {
           amount_kobo: number
@@ -69,7 +135,9 @@ export type Database = {
         Row: {
           amount: number
           created_at: string
+          direction: number | null
           id: string
+          reason: string | null
           reference: string
           type: string
           user_id: string
@@ -77,7 +145,9 @@ export type Database = {
         Insert: {
           amount: number
           created_at?: string
+          direction?: number | null
           id?: string
+          reason?: string | null
           reference: string
           type: string
           user_id: string
@@ -85,7 +155,9 @@ export type Database = {
         Update: {
           amount?: number
           created_at?: string
+          direction?: number | null
           id?: string
+          reason?: string | null
           reference?: string
           type?: string
           user_id?: string
@@ -104,10 +176,15 @@ export type Database = {
         Row: {
           cost_credits: number
           created_at: string
+          exchange_rate_snapshot: number | null
           id: string
           link: string
+          nitro_cost_ngn: number | null
+          nitro_cost_usd: number | null
           nitro_order_id: string | null
+          provider_status: string | null
           quantity: number
+          refunded_at: string | null
           request_id: string | null
           service_id: string
           status: string
@@ -117,10 +194,15 @@ export type Database = {
         Insert: {
           cost_credits: number
           created_at?: string
+          exchange_rate_snapshot?: number | null
           id?: string
           link: string
+          nitro_cost_ngn?: number | null
+          nitro_cost_usd?: number | null
           nitro_order_id?: string | null
+          provider_status?: string | null
           quantity: number
+          refunded_at?: string | null
           request_id?: string | null
           service_id: string
           status?: string
@@ -130,10 +212,15 @@ export type Database = {
         Update: {
           cost_credits?: number
           created_at?: string
+          exchange_rate_snapshot?: number | null
           id?: string
           link?: string
+          nitro_cost_ngn?: number | null
+          nitro_cost_usd?: number | null
           nitro_order_id?: string | null
+          provider_status?: string | null
           quantity?: number
+          refunded_at?: string | null
           request_id?: string | null
           service_id?: string
           status?: string
@@ -159,19 +246,25 @@ export type Database = {
       }
       profiles: {
         Row: {
+          created_at: string
           credits_balance: number
           email: string
           id: string
+          suspended: boolean
         }
         Insert: {
+          created_at?: string
           credits_balance?: number
           email?: string
           id: string
+          suspended?: boolean
         }
         Update: {
+          created_at?: string
           credits_balance?: number
           email?: string
           id?: string
+          suspended?: boolean
         }
         Relationships: []
       }
@@ -179,7 +272,10 @@ export type Database = {
         Row: {
           active: boolean
           category: string
+          cost_changed: boolean
           id: string
+          last_synced_at: string | null
+          markup_override: boolean
           markup_percent: number
           max_qty: number
           min_qty: number
@@ -187,12 +283,18 @@ export type Database = {
           nitro_rate_usd: number
           nitro_service_id: string
           platform: string
+          previous_nitro_rate_usd: number | null
+          price_override_ngn: number | null
           price_per_1000_ngn: number
+          provider_missing: boolean
         }
         Insert: {
           active?: boolean
           category?: string
+          cost_changed?: boolean
           id?: string
+          last_synced_at?: string | null
+          markup_override?: boolean
           markup_percent?: number
           max_qty?: number
           min_qty?: number
@@ -200,12 +302,18 @@ export type Database = {
           nitro_rate_usd?: number
           nitro_service_id: string
           platform?: string
+          previous_nitro_rate_usd?: number | null
+          price_override_ngn?: number | null
           price_per_1000_ngn?: number
+          provider_missing?: boolean
         }
         Update: {
           active?: boolean
           category?: string
+          cost_changed?: boolean
           id?: string
+          last_synced_at?: string | null
+          markup_override?: boolean
           markup_percent?: number
           max_qty?: number
           min_qty?: number
@@ -213,7 +321,10 @@ export type Database = {
           nitro_rate_usd?: number
           nitro_service_id?: string
           platform?: string
+          previous_nitro_rate_usd?: number | null
+          price_override_ngn?: number | null
           price_per_1000_ngn?: number
+          provider_missing?: boolean
         }
         Relationships: []
       }
@@ -237,6 +348,9 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      admin_manage: { Args: { _action: string; _payload: Json }; Returns: Json }
+      admin_record_sync: { Args: { _count: number }; Returns: undefined }
+      admin_sync_catalogue: { Args: { _services: Json }; Returns: number }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -244,6 +358,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      public_minimum_topup: { Args: never; Returns: number }
       refund_credit_order: {
         Args: { _order_id: string; _user_id: string }
         Returns: number
