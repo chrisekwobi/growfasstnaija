@@ -55,19 +55,21 @@ export const updateAdminService = createServerFn({ method: "POST" }).middleware(
 export const syncNitroServices = createServerFn({ method: "POST" }).middleware([requireSupabaseAuth]).handler(async ({ context }) => {
   const role = await context.supabase.rpc("has_role", { _user_id: context.userId, _role: "admin" });
   if (role.error || !role.data) throw new Error("Admin access required.");
-  const apiUrl = process.env["NITRO_API_URL"];
-  const apiKey = process.env["NITRO_API_KEY"];
+  const apiUrl = process.env["NITRO_API_URL"]?.trim();
+  const apiKey = process.env["NITRO_API_KEY"]?.trim();
   if (!apiUrl || !apiKey) return { success: false, count: 0, message: "Add Nitro API URL and API key in Cloud secrets before syncing." };
   try {
     const url = new URL(apiUrl);
     if (url.protocol !== "https:") throw new Error("HTTPS required");
-    const response = await fetch(url, { method: "POST", redirect: "error", headers: { "Content-Type": "application/x-www-form-urlencoded" }, body: new URLSearchParams({ key: apiKey, action: "services" }), signal: AbortSignal.timeout(30000) });
+    const response = await fetch(url, { method: "POST", redirect: "manual", headers: { "Content-Type": "application/x-www-form-urlencoded" }, body: new URLSearchParams({ key: apiKey, action: "services" }), signal: AbortSignal.timeout(30000) });
     if (!response.ok) throw new Error("Nitro request failed");
     const services = parseNitroServices(await response.json());
+    if (services.length === 0) throw new Error("Empty provider catalogue; existing services left unchanged");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const result = await supabaseAdmin.rpc("upsert_nitro_services", { _services: services });
     if (result.error) throw new Error("Nitro import failed");
-    return { success: true, count: result.data, message: `Synced ${result.data} services. Existing prices, markup and quantity limits were preserved. New services are inactive until priced.` };
+    await context.supabase.rpc("admin_manage", { _action: "sync", _payload: { count: result.data } });
+    return { success: true, count: result.data, message: `Synced ${result.data} services. Names, categories, markup, price overrides and quantity limits were preserved. Missing services were deactivated.` };
   } catch {
     return { success: false, count: 0, message: "Nitro sync failed. Check the API URL, key and provider service response, then retry. Existing service edits were not changed." };
   }

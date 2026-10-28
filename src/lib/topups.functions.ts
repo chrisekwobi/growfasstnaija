@@ -9,8 +9,12 @@ export const initializeTopup = createServerFn({ method: "POST" }).middleware([re
     const { paystackRequest } = await import("@/lib/paystack.server");
     const { getRequest } = await import("@tanstack/react-start/server");
     const origin = new URL(getRequest().url).origin;
-    const { data: profile, error } = await context.supabase.from("profiles").select("email").eq("id", context.userId).single();
+    const { data: profile, error } = await context.supabase.from("profiles").select("email,suspended").eq("id", context.userId).single();
     if (error || !profile?.email) throw new Error("Your account email is unavailable. Please sign in again.");
+    if (profile.suspended) throw new Error("Your account is suspended. Please contact support.");
+    const minimum = await context.supabase.rpc("public_minimum_topup");
+    if (minimum.error) throw new Error("Could not check the minimum top-up. Please retry.");
+    if (data.amount < minimum.data) throw new Error(`The minimum top-up is ₦${minimum.data.toLocaleString("en-NG")}.`);
     if (!process.env["PAYSTACK_SECRET_KEY"]) throw new Error("Payments are not available yet. Please try again later.");
     const reference = `gf_${crypto.randomUUID().replaceAll("-", "")}`;
     const amount = toKobo(data.amount);
