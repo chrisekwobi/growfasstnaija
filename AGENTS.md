@@ -17,3 +17,6 @@
 - Sync Nitro metadata through an authenticated Cloud server function and a service-role-only transactional SQL upsert that preserves all owner-controlled pricing and activation fields.
 - Reserve credit orders and ledger debits atomically through service-role-only SQL functions with per-user request IDs; refund explicit provider rejections exactly once and hold ambiguous submissions for review rather than risking duplicate fulfillment.
 - Initialize Paystack payments in authenticated server functions with server-owned references and stored amounts; settle signed webhooks and authenticated provider verification through one service-role-only atomic SQL function so each reference credits once. Keep provider helpers server-only through handler-local imports.
+- Keep admin pages under one authenticated sidebar layout; every admin read and mutation independently checks has_role server-side, with RLS-scoped reads and transactional audited mutation RPCs to prevent browser privilege escalation.
+- Derive service prices through database triggers with explicit price/markup overrides; snapshot provider costs and exchange rates when reserving orders so later syncs cannot rewrite historical profit estimates.
+- Suspensions block new orders and top-ups at both server and database boundaries, but previously paid transactions can still settle to avoid losing customer funds.
