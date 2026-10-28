@@ -3,13 +3,24 @@ import { paystackTransactionSchema, paymentMatches } from "@/lib/topup-validatio
 
 // Provider responses never escape to browser logs or error messages.
 export async function paystackRequest(path: string, body?: Record<string, unknown>): Promise<unknown> {
-  const secret = process.env["PAYSTACK_SECRET_KEY"];
+  const secret = process.env["PAYSTACK_SECRET_KEY"]?.trim();
   if (!secret) throw new Error("Payments are not available yet. Please try again later.");
+  let response: Response;
   try {
-    const response = await fetch(`https://api.paystack.co${path}`, { method: body ? "POST" : "GET", headers: { Authorization: `Bearer ${secret}`, "Content-Type": "application/json" }, ...(body ? { body: JSON.stringify(body) } : {}), redirect: "error", signal: AbortSignal.timeout(20000) });
-    if (!response.ok) throw new Error();
-    return await response.json();
-  } catch { throw new Error("Paystack could not confirm this request. Please try again; do not make another payment if you were charged."); }
+    // Workers only support redirect "follow" | "manual"; "error" throws before the request is sent.
+    response = await fetch(`https://api.paystack.co${path}`, { method: body ? "POST" : "GET", headers: { Authorization: `Bearer ${secret}`, "Content-Type": "application/json" }, ...(body ? { body: JSON.stringify(body) } : {}), redirect: "manual", signal: AbortSignal.timeout(20000) });
+  } catch (error) {
+    const reason = error instanceof Error ? error.message : String(error);
+    console.error(`[paystack] ${path} network error: ${reason}`);
+    throw new Error(`Paystack could not be reached (${reason}). Please try again; do not make another payment if you were charged.`);
+  }
+  const json: unknown = await response.json().catch(() => null);
+  if (!response.ok) {
+    const message = json && typeof json === "object" && "message" in json ? String((json as { message: unknown }).message) : "No message";
+    console.error(`[paystack] ${path} HTTP ${response.status}: ${message}`);
+    throw new Error(`Paystack error ${response.status}: ${message}`);
+  }
+  return json;
 }
 
 export async function settleVerifiedPayment(input: unknown) {
