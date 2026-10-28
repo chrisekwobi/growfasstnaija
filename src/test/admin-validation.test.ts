@@ -1,0 +1,20 @@
+import { describe, expect, it } from "vitest";
+import { adminMutationSchema, defaultAdminSettings, serviceEconomics, settingsSchema, transactionDelta, csvCell } from "@/lib/admin-validation";
+import { adminReport } from "@/lib/admin-reporting";
+import type { AdminData } from "@/lib/admin.functions";
+
+describe("Admin business rules", () => {
+  it("defaults the low Nitro balance warning to $10", () => { expect(defaultAdminSettings.low_balance_threshold).toBe(10); });
+  it("recalculates automatic pricing from exchange rate and markup", () => { expect(serviceEconomics(2, 1500, 25, null).price).toBe(3750); expect(serviceEconomics(2, 1600, 50, null).price).toBe(4800); });
+  it("preserves manual price overrides when exchange rate changes", () => { expect(serviceEconomics(2, 1500, 25, 4000).price).toBe(4000); expect(serviceEconomics(2, 1600, 50, 4000).price).toBe(4000); });
+  it("identifies negative service profit", () => { expect(serviceEconomics(2, 1500, 25, 2000).profit).toBe(-1000); });
+  it("requires a reason for manual credit changes", () => { const input = { action: "adjust", payload: { user_id: "00000000-0000-4000-8000-000000000001", amount: 1000, direction: 1, request_id: "00000000-0000-4000-8000-000000000002", reason: "" } }; expect(adminMutationSchema.safeParse(input).success).toBe(false); expect(adminMutationSchema.safeParse({ ...input, payload: { ...input.payload, reason: "Customer compensation" } }).success).toBe(true); });
+  it("requires a reason for refunds and suspension", () => { for (const action of ["refund", "cancel"]) expect(adminMutationSchema.safeParse({ action, payload: { id: "00000000-0000-4000-8000-000000000001", reason: "" } }).success).toBe(false); expect(adminMutationSchema.safeParse({ action: "suspend", payload: { user_id: "00000000-0000-4000-8000-000000000001", suspended: true, reason: "" } }).success).toBe(false); });
+  it("keeps the ₦500 top-up floor and rejects invalid fee estimates", () => { const base = { exchange_rate: 1500, default_markup: 20, low_balance_threshold: 10, paystack_fee_percent: 1.5, minimum_topup: 500 }; expect(settingsSchema.safeParse(base).success).toBe(true); expect(settingsSchema.safeParse({ ...base, minimum_topup: 499 }).success).toBe(false); expect(settingsSchema.safeParse({ ...base, paystack_fee_percent: 101 }).success).toBe(false); });
+  it("reports signed manual credits and debits", () => { expect(transactionDelta({ type: "adjustment", amount: 100, direction: -1 })).toBe(-100); expect(transactionDelta({ type: "order", amount: 200 })).toBe(-200); expect(transactionDelta({ type: "refund", amount: 200 })).toBe(200); });
+  it("escapes CSV values and neutralizes spreadsheet formulas", () => { expect(csvCell('a,"b"')).toBe('"a,""b"""'); expect(csvCell("=1+2")).toBe('"\'=1+2"'); });
+  it("counts only settled topups and estimates profit from completed snapshots", () => {
+    const data = { settings: { ...defaultAdminSettings, paystack_fee_percent: 2 }, profiles: [{ credits_balance: 700 }], topups: [{ status: "credited", amount_kobo: 100000, credited_at: "2026-10-28T10:00:00Z", created_at: "2026-10-28T10:00:00Z" }, { status: "pending", amount_kobo: 500000 }], orders: [{ status: "completed", cost_credits: 300, nitro_cost_ngn: 100, created_at: "2026-10-28T10:00:00Z", updated_at: "2026-10-28T11:00:00Z" }, { status: "processing", cost_credits: 900, nitro_cost_ngn: 50, created_at: "2026-10-20T10:00:00Z" }, { status: "completed", cost_credits: 500, nitro_cost_ngn: null, created_at: "2026-09-20T10:00:00Z", updated_at: "2026-10-28T10:00:00Z" }] } as Pick<AdminData, "settings" | "profiles" | "topups" | "orders">;
+    const report = adminReport(data, new Date("2026-10-28T15:00:00Z")); expect(report.revenue).toBe(1000); expect(report.creditsSold).toBe(1000); expect(report.liability).toBe(700); expect(report.nitroCost).toBe(100); expect(report.profit).toBe(180); expect(report.unknownCosts).toBe(1); expect(report.today).toBe(1); expect(report.week).toBe(1); expect(report.month).toBe(2); expect(report.days).toHaveLength(30); expect(report.days.at(-1)?.profit).toBe(180);
+  });
+});

@@ -24,7 +24,7 @@ function useAdminAction() {
 }
 function Heading({ title, subtitle, children }: { title: string; subtitle: string; children?: React.ReactNode }) { return <div className="admin-page-heading"><div><p className="eyebrow">Administration</p><h1>{title}</h1><p>{subtitle}</p></div><div className="admin-toolbar">{children}</div></div>; }
 function DataBoundary({ query, children }: { query: ReturnType<typeof useData>; children: (data: AdminData) => React.ReactNode }) { return <main className="admin-content">{query.isPending ? <p role="status">Loading administration…</p> : query.isError ? <div role="alert"><p>{query.error.message}</p><Button onClick={() => query.refetch()} className="mt-4"><RefreshCw />Retry</Button></div> : children(query.data)}</main>; }
-function Empty({ text = "No records match your filters." }: { text?: string }) { return <p className="admin-empty">{text}</p>; }
+function Empty({ text = "No records match your filters." }: { text?: string | undefined }) { return <p className="admin-empty">{text}</p>; }
 function Notice({ action }: { action: ReturnType<typeof useAdminAction> }) { return action.isError ? <p role="alert" className="admin-warning">{action.error.message}</p> : action.isSuccess ? <p role="status" className="auth-notice">Saved successfully.</p> : null; }
 
 export function AdminOverview() {

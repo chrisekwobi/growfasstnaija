@@ -34,7 +34,7 @@ function TopUp() {
     return data;
   } });
   const amount = preset ?? Number(custom);
-  const valid = topupAmountSchema.min(minimum, `The minimum top-up is ${formatNaira(minimum)}.`).safeParse(amount);
+  const valid = topupAmountSchema.refine(value => value >= minimum, `The minimum top-up is ${formatNaira(minimum)}.`).safeParse(amount);
   async function submit(event: FormEvent) {
     event.preventDefault();
     if (!valid.success) { setNotice(valid.error.issues[0]?.message ?? "Enter a valid amount."); return; }

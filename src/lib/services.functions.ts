@@ -68,7 +68,8 @@ export const syncNitroServices = createServerFn({ method: "POST" }).middleware([
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const result = await supabaseAdmin.rpc("upsert_nitro_services", { _services: services });
     if (result.error) throw new Error("Nitro import failed");
-    await context.supabase.rpc("admin_manage", { _action: "sync", _payload: { count: result.data } });
+    const audited = await context.supabase.rpc("admin_record_sync", { _count: result.data });
+    if (audited.error) return { success: true, count: result.data, message: `Synced ${result.data} services, but the sync audit entry could not be saved. Please contact the site owner.` };
     return { success: true, count: result.data, message: `Synced ${result.data} services. Names, categories, markup, price overrides and quantity limits were preserved. Missing services were deactivated.` };
   } catch {
     return { success: false, count: 0, message: "Nitro sync failed. Check the API URL, key and provider service response, then retry. Existing service edits were not changed." };
