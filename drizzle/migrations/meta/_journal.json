@@ -36,6 +36,13 @@
       "when": 1793198461304,
       "tag": "0004_complete_admin_management",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1793198721642,
+      "tag": "0005_admin_sync_audit_and_security",
+      "breakpoints": true
     }
   ]
 }

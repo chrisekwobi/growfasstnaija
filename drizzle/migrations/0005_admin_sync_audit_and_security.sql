@@ -1,0 +1,6 @@
+CREATE FUNCTION public.admin_record_sync(_count integer) RETURNS void LANGUAGE plpgsql SECURITY DEFINER SET search_path=public AS $$ BEGIN IF auth.uid() IS NULL OR NOT public.has_role(auth.uid(),'admin') OR EXISTS(SELECT 1 FROM public.profiles WHERE id=auth.uid() AND suspended) THEN RAISE EXCEPTION 'Admin access required'; END IF; INSERT INTO public.admin_audit_log(actor_id,actor_email,action,new_values) VALUES(auth.uid(),(SELECT email FROM public.profiles WHERE id=auth.uid()),'nitro_sync',jsonb_build_object('synced_count',_count)); END $$;
+REVOKE ALL ON FUNCTION public.admin_record_sync(integer) FROM PUBLIC,anon;
+GRANT EXECUTE ON FUNCTION public.admin_record_sync(integer) TO authenticated;
+ALTER POLICY services_admin_update ON public.services USING(public.has_role(auth.uid(),'admin') AND NOT EXISTS(SELECT 1 FROM public.profiles WHERE id=auth.uid() AND suspended)) WITH CHECK(public.has_role(auth.uid(),'admin') AND NOT EXISTS(SELECT 1 FROM public.profiles WHERE id=auth.uid() AND suspended));
+ALTER POLICY services_admin_insert ON public.services WITH CHECK(public.has_role(auth.uid(),'admin') AND NOT EXISTS(SELECT 1 FROM public.profiles WHERE id=auth.uid() AND suspended));
+ALTER POLICY services_admin_delete ON public.services USING(public.has_role(auth.uid(),'admin') AND NOT EXISTS(SELECT 1 FROM public.profiles WHERE id=auth.uid() AND suspended));
