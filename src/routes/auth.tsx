@@ -13,6 +13,18 @@ export const Route = createFileRoute("/auth")({
   component: AuthPage,
 });
 
+function friendlyAuthError(error: unknown): string {
+  const message = error instanceof Error ? error.message : "";
+  const lower = message.toLowerCase();
+  if (lower.includes("already registered") || lower.includes("already been registered") || lower.includes("user already exists")) return "This email already has an account. Log in instead, or use Forgot password if you need a new password.";
+  if (lower.includes("password") && (lower.includes("at least") || lower.includes("weak") || lower.includes("short") || lower.includes("characters"))) return "That password is too weak. Use at least 8 characters with a mix of letters and numbers.";
+  if (lower.includes("email not confirmed")) return "Your account is not confirmed yet. Open the confirmation link in your email, then log in.";
+  if (lower.includes("invalid login credentials")) return "Email or password is incorrect. Check both and try again, or use Forgot password.";
+  if (lower.includes("rate limit") || lower.includes("too many requests") || lower.includes("over_email_send_rate_limit")) return "Too many attempts. Please wait a few minutes and try again.";
+  if (lower.includes("invalid email") || lower.includes("unable to validate email")) return "That email address does not look valid. Check it and try again.";
+  return message || "Unable to continue. Please retry.";
+}
+
 function AuthPage() {
   const { mode, order, next, reference } = Route.useSearch();
   const [forgot, setForgot] = useState(false);
@@ -47,7 +59,7 @@ function AuthPage() {
         await continueAfterLogin();
       }
     } catch (error) {
-      setNotice(error instanceof Error ? error.message : "Unable to continue. Please retry.");
+      setNotice(friendlyAuthError(error));
     } finally { setBusy(false); }
   }
   return <SiteFrame><main className="page-wrap account-page"><section className="auth-panel">

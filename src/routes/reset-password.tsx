@@ -23,7 +23,12 @@ function ResetPassword() {
     setBusy(true);
     const { error } = await supabase.auth.updateUser({ password });
     setBusy(false);
-    if (error) setNotice(error.message);
+    if (error) {
+      const lower = error.message.toLowerCase();
+      if (lower.includes("password") && (lower.includes("at least") || lower.includes("weak") || lower.includes("short"))) setNotice("That password is too weak. Use at least 8 characters with a mix of letters and numbers.");
+      else if (lower.includes("same") && lower.includes("password")) setNotice("Your new password must be different from your current password.");
+      else setNotice(error.message);
+    }
     else { setDone(true); setNotice("Your password has been updated."); }
   }
   return <SiteFrame><main className="page-wrap account-page"><section className="auth-panel"><h1>Set a new password</h1>
