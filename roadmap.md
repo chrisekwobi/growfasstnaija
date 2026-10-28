@@ -1,3 +1,5 @@
+- [ ] Build the seven-page protected admin area with financial reports, pricing, services, orders, users, transactions, and audit history.
+- [ ] Verify admin authorization, calculations, credit adjustments, and mobile navigation.
 - [x] Build shared Glow Fast branding, catalogue, and WhatsApp ordering.
 - [x] Create home, service catalogue, platform, about, FAQ, contact, terms, and privacy pages.
 - [x] Add route-specific metadata, favicon, and responsive styles.
