@@ -1,5 +1,6 @@
-- [ ] Build the seven-page protected admin area with financial reports, pricing, services, orders, users, transactions, and audit history.
-- [ ] Verify admin authorization, calculations, credit adjustments, and mobile navigation.
+- [x] Build the seven-page protected admin area with financial reports, pricing, services, orders, users, transactions, and audit history.
+- [x] Verify signed-out route gates, pricing/reporting calculations, validation, schema permissions and top-up mobile layout; 44 relevant tests passed.
+- [ ] Verify signed-in admin navigation, live Nitro balance/sync, adjustments and refunds end-to-end — no account matches the requesting owner and no account has the admin role; waiting for owner signup/email identification and permission to test real credits/provider actions.
 - [x] Build shared Glow Fast branding, catalogue, and WhatsApp ordering.
 - [x] Create home, service catalogue, platform, about, FAQ, contact, terms, and privacy pages.
 - [x] Add route-specific metadata, favicon, and responsive styles.
@@ -14,8 +15,8 @@
 - [x] Create protected profiles, roles, services, orders, and credit transactions.
 - [x] Add admin service editing and price-preserving Nitro sync; securely store Nitro credentials.
 - [x] Load homepage services from Cloud and verify public pages, route gates, database grants, and validation tests.
-- [ ] Assign the owner's admin role and verify signed-in balance, admin editing, and live Nitro sync — waiting for the owner to register and identify their account; there are no auth users yet.
+- [ ] Assign the owner's admin role and verify signed-in balance, admin editing, and live Nitro sync — two accounts exist but neither matches the requesting owner and neither has admin access; waiting for the owner's registered email.
 - [x] Build Paystack top-up amounts, authenticated checkout, signed webhook, atomic credit settlement, and callback verification.
 - [ ] Verify Paystack checkout end-to-end — credentials saved; waiting for a registered account and Paystack webhook configuration on a published site. Live payments require provider approval of the business.
 - [x] Implement validated credit ordering, atomic deductions/refunds, Nitro submission, login return, and Add credits entry.
-- [ ] Verify paid-order success/refund end-to-end — waiting for a registered account, funded credits, active Nitro service, and authorization for a real provider order; currently there are no users or services.
+- [ ] Verify paid-order success/refund end-to-end — waiting for an identified account, funded credits, active Nitro service, and authorization for a real provider order; no services have been synced yet.

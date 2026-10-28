@@ -46,7 +46,7 @@ export const updateAdminService = createServerFn({ method: "POST" }).middleware(
     const role = await context.supabase.rpc("has_role", { _user_id: context.userId, _role: "admin" });
     if (role.error || !role.data) throw new Error("Admin access required.");
     const { id, ...edits } = data;
-    const result = await context.supabase.from("services").update(edits).eq("id", id).select("id").single();
+    const result = await context.supabase.from("services").update({ ...edits, price_override_ngn: edits.price_per_1000_ngn, markup_override: true }).eq("id", id).select("id").single();
     if (result.error) throw new Error("Could not save this service.");
     return { success: true };
   });
@@ -55,6 +55,8 @@ export const updateAdminService = createServerFn({ method: "POST" }).middleware(
 export const syncNitroServices = createServerFn({ method: "POST" }).middleware([requireSupabaseAuth]).handler(async ({ context }) => {
   const role = await context.supabase.rpc("has_role", { _user_id: context.userId, _role: "admin" });
   if (role.error || !role.data) throw new Error("Admin access required.");
+  const profile = await context.supabase.from("profiles").select("suspended").eq("id", context.userId).single();
+  if (profile.error || profile.data.suspended) throw new Error("Admin access required.");
   const apiUrl = process.env["NITRO_API_URL"]?.trim();
   const apiKey = process.env["NITRO_API_KEY"]?.trim();
   if (!apiUrl || !apiKey) return { success: false, count: 0, message: "Add Nitro API URL and API key in Cloud secrets before syncing." };
