@@ -350,6 +350,7 @@ export type Database = {
     Functions: {
       admin_manage: { Args: { _action: string; _payload: Json }; Returns: Json }
       admin_record_sync: { Args: { _count: number }; Returns: undefined }
+      admin_sync_catalogue: { Args: { _services: Json }; Returns: number }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
