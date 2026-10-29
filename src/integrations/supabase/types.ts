@@ -348,6 +348,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      admin_attach_nitro_order: {
+        Args: { _nitro_order_id: string; _order_id: string; _status: string }
+        Returns: undefined
+      }
       admin_manage: { Args: { _action: string; _payload: Json }; Returns: Json }
       admin_record_sync: { Args: { _count: number }; Returns: undefined }
       admin_sync_catalogue: { Args: { _services: Json }; Returns: number }
