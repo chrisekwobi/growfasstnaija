@@ -556,7 +556,7 @@
   .site-nav:has(.credit-balance) .account-controls { order: 3; width: 100%; flex-wrap: wrap; margin-left: 0; }
   .site-nav:has(.credit-balance) .account-controls > * { flex: 1 1 auto; }
   .platform-jumps { top: 60px; }
-  .site-nav:has(.credit-balance) ~ * .platform-jumps { top: 118px; }
+  body:has(.site-nav .credit-balance) .platform-jumps { top: 118px; }
   .home-intro { padding-block: 1.6rem 1rem; }
   .home-intro h1 { font-size: 2.15rem; line-height: 1.12; }
   .hero-art-stack { order: 2; max-width: 230px; margin-top: .4rem; }
