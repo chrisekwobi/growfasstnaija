@@ -539,3 +539,7 @@
   .ha-arrow-head { animation: none; opacity: 1; }
 }
 @media (max-width: 900px) { .hero-art-stack { max-width: 340px; order: -1; } }
+
+/* On phones the floating chat button stays hidden until the visitor scrolls past the hero, so it never covers the hero buttons. */
+.floating-support { transition: opacity .2s ease, visibility .2s ease; }
+@media (max-width: 640px) { .floating-support-early { visibility: hidden; opacity: 0; } }

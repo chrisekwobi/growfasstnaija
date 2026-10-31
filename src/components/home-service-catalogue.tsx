@@ -31,6 +31,13 @@ export function HomeServiceCatalogue() {
     if (!user) { void navigate({ to: "/auth", search: { mode: "login", order: service.id } }); return; }
     setSelected(service);
   };
+  const [pastHero, setPastHero] = useState(false);
+  useEffect(() => {
+    const update = () => setPastHero(window.scrollY > 480);
+    update();
+    window.addEventListener("scroll", update, { passive: true });
+    return () => window.removeEventListener("scroll", update);
+  }, []);
   const closeOrder = () => { setSelected(null); if (order) void navigate({ to: "/", search: {} }); };
 
   return <>
@@ -67,7 +74,7 @@ export function HomeServiceCatalogue() {
       })}
       <p className="catalogue-safety">Confirm availability and platform rules before payment. No guaranteed growth or earnings. Never share passwords or login codes.</p>
     </section>
-    <Button asChild className="floating-support"><a href={whatsappUrl(generalWhatsAppMessage)} target="_blank" rel="noreferrer"><MessageCircle aria-hidden="true" />Chat with us</a></Button>
+    <Button asChild className={`floating-support${pastHero ? "" : " floating-support-early"}`}><a href={whatsappUrl(generalWhatsAppMessage)} target="_blank" rel="noreferrer"><MessageCircle aria-hidden="true" />Chat with us</a></Button>
     {selected && user && <CreditOrderDialog key={selected.id} service={selected} onClose={closeOrder} />}
   </>;
 }
