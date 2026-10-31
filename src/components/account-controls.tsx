@@ -61,7 +61,7 @@ export function AccountControls() {
   }
   if (loading) return <span className="account-loading" aria-live="polite">Account…</span>;
   return <div className="account-controls">
-    {user ? <><span className="credit-balance"><Wallet size={18} aria-hidden="true" />{profile.isError ? "Balance unavailable" : profile.data ? `${formatNaira(profile.data.credits_balance)} credits` : "Balance…"}</span><Button asChild><Link to="/top-up">Add credits</Link></Button>{role.data && <Button asChild><Link to="/admin">Admin</Link></Button>}<Button size="icon" onClick={logout} aria-label="Log out" title="Log out"><LogOut aria-hidden="true" /></Button></> : <><Button asChild><Link to="/auth" search={{ mode: "login" }}>Login</Link></Button><Button asChild><Link to="/auth" search={{ mode: "signup" }}>Sign up</Link></Button></>}
+    {user ? <><span className="credit-balance"><Wallet size={18} aria-hidden="true" />{profile.isError ? "Balance unavailable" : profile.data ? `${formatNaira(profile.data.credits_balance)} credits` : "Balance…"}</span><Button asChild><Link to="/orders">My orders</Link></Button><Button asChild><Link to="/top-up">Add credits</Link></Button>{role.data && <Button asChild><Link to="/admin">Admin</Link></Button>}<Button size="icon" onClick={logout} aria-label="Log out" title="Log out"><LogOut aria-hidden="true" /></Button></> : <><Button asChild><Link to="/auth" search={{ mode: "login" }}>Login</Link></Button><Button asChild><Link to="/auth" search={{ mode: "signup" }}>Sign up</Link></Button></>}
     {notice && <span role="alert">{notice}</span>}
   </div>;
 }
