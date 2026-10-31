@@ -26,6 +26,7 @@ import {
 } from "lucide-react";
 import { HomeServiceCatalogue } from "@/components/home-service-catalogue";
 import { AccountControls } from "@/components/account-controls";
+import { HeroArt } from "@/components/hero-art";
 import { HeroScene } from "@/components/hero-scene";
 import heroArt from "@/assets/glowfast-social-visual.jpg";
 import { Button } from "@/components/ui/button";
@@ -294,7 +295,10 @@ export function HomePage() {
             <li><MessageCircle aria-hidden="true" />WhatsApp support</li>
           </ul>
         </div>
-        <HeroScene fallback={<img src={heroArt} alt="Grow Fast social media illustration with a phone and growth chart" width={1024} height={1024} fetchPriority="high" />} />
+        <div className="hero-art-stack">
+          <HeroScene fallback={null} />
+          <HeroArt />
+        </div>
       </section>
       <HomeServiceCatalogue />
       <section className="page-wrap home-faq" id="faq" aria-label="Frequently asked questions">
