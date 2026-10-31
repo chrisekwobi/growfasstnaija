@@ -574,3 +574,5 @@
   .site-nav .mobile-menu-button { flex-shrink: 0; width: 40px; height: 40px; }
   .site-nav .brand, .site-nav > a:first-child { min-width: 0; flex-shrink: 1; }
 }
+@media (max-width: 640px) { .site-nav .brand-mark { flex-shrink: 0; } .site-nav .brand-link { font-size: 1.05rem; gap: .45rem; } }
+@media (max-width: 360px) { .site-nav .brand-mark { width: 32px; height: 32px; } }
