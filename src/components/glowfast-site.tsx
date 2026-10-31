@@ -20,11 +20,13 @@ import {
   Star,
   Users,
   Video,
+  Wallet,
   X,
   Youtube,
 } from "lucide-react";
 import { HomeServiceCatalogue } from "@/components/home-service-catalogue";
 import { AccountControls } from "@/components/account-controls";
+import { HeroScene } from "@/components/hero-scene";
 import heroArt from "@/assets/glowfast-social-visual.jpg";
 import { Button } from "@/components/ui/button";
 import {
@@ -163,7 +165,7 @@ export function SiteFooter() {
       </div>
       <div className="page-wrap footer-bottom">
         <span>© {new Date().getFullYear()} Grow Fast. All rights reserved.</span>
-        <span>Draft package values and policies must be confirmed before ordering.</span>
+        <span>Prices and availability can change. Confirm details before you order.</span>
       </div>
     </footer>
   );
@@ -277,15 +279,29 @@ export function HomePage() {
   return (
     <main className="beginner-home">
       <section className="home-intro page-wrap" aria-labelledby="home-title">
-        <div>
+        <div className="hero-copy">
           <span className="eyebrow">GROW FAST · Social media services</span>
-          <h1 id="home-title">Grow fast and monetize your social media.</h1>
-          <p>Choose a platform, find your service, and place your order.</p>
-          <Button asChild><a href="#services">Choose a service <ArrowRight aria-hidden="true" /></a></Button>
+          <h1 id="home-title">Grow fast and <span className="text-glow">monetize</span> your social media.</h1>
+          <p>Choose a platform, find your service, and place your order in minutes.</p>
+          <div className="hero-actions">
+            <Button asChild size="lg"><a href="#services">Choose a service <ArrowRight aria-hidden="true" /></a></Button>
+            <Button asChild size="lg" variant="outline"><a href="#how-it-works">How it works</a></Button>
+          </div>
+          <ul className="trust-row" aria-label="Why customers use Grow Fast">
+            <li><ShieldCheck aria-hidden="true" />Secure Paystack payments</li>
+            <li><Wallet aria-hidden="true" />Prices in Naira</li>
+            <li><Check aria-hidden="true" />Pay with account credits</li>
+            <li><MessageCircle aria-hidden="true" />WhatsApp support</li>
+          </ul>
         </div>
-        <img src={heroArt} alt="Grow Fast social media illustration with a phone and growth chart" width={1024} height={1024} fetchPriority="high" />
+        <HeroScene fallback={<img src={heroArt} alt="Grow Fast social media illustration with a phone and growth chart" width={1024} height={1024} fetchPriority="high" />} />
       </section>
       <HomeServiceCatalogue />
+      <section className="page-wrap home-faq" id="faq" aria-label="Frequently asked questions">
+        <SectionHeading eyebrow="Questions" title="Frequently asked questions" copy="Quick answers before you order." />
+        <FaqList limit={5} />
+        <Button asChild variant="outline" className="mt-5"><Link to="/faq">See all questions <ArrowRight aria-hidden="true" /></Link></Button>
+      </section>
     </main>
   );
 }

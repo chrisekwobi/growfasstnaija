@@ -457,3 +457,62 @@
 @media (max-width: 1050px) { .admin-workspace { grid-template-columns: 200px minmax(0,1fr); } .admin-content { padding: 24px; } .admin-metrics { grid-template-columns: repeat(2,minmax(0,1fr)); } }
 @media (max-width: 700px) { .admin-workspace { grid-template-columns: 180px minmax(0,1fr); } .admin-workspace.admin-collapsed { grid-template-columns: 64px minmax(0,1fr); } .admin-content { padding: 20px 12px; } .admin-topbar { padding: 12px; gap: 8px; } .admin-topbar > a { display: none; } .admin-topbar > span { font-size: 12px; } .admin-metrics, .admin-settings-form { grid-template-columns: minmax(0,1fr); } .admin-page-heading h1 { font-size: 25px; } .admin-metric strong { font-size: 24px; } .admin-balance-band { align-items: flex-start; flex-direction: column; } .admin-filters > input, .admin-filters > select { max-width: none; } .admin-filters label { flex-wrap: wrap; } .admin-chart { height: 260px; } .admin-sidebar { padding-inline: 10px; } .admin-sidebar nav a { font-size: 12px; padding: 10px; } .admin-brand span { font-size: 13px; } }
 .admin-unknown-alert { padding: 20px; font-size: 16px; border-width: 2px; } .admin-unknown-alert > div { flex: 1; min-width: 220px; } .admin-unknown-alert strong { font-size: 19px; }
+
+/* ---- Homepage redesign: hero, trust row, platform chips, service tiles ---- */
+.home-intro { position: relative; display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr); align-items: center; gap: 2rem; padding-block: 3.5rem 2.5rem; }
+.home-intro::before { content: ""; position: absolute; z-index: -1; inset: 0 0 auto auto; width: min(42rem, 80vw); aspect-ratio: 1; border-radius: 50%; background: radial-gradient(circle, color-mix(in oklab, var(--primary) 22%, transparent), transparent 68%); filter: blur(8px); }
+.home-intro .hero-copy { max-width: 640px; }
+.home-intro h1 { font-size: clamp(2.2rem, 5vw, 3.6rem); line-height: 1.08; letter-spacing: -.02em; }
+.home-intro .hero-copy > p { max-width: 34rem; color: var(--muted-foreground); font-size: 1.15rem; }
+.trust-row { display: flex; flex-wrap: wrap; gap: .6rem .6rem; margin-top: 1.6rem; }
+.trust-row li { display: inline-flex; align-items: center; gap: .45rem; padding: .45rem .8rem; border: 1px solid var(--border); border-radius: 999px; background: color-mix(in oklab, var(--card) 80%, transparent); font-size: .85rem; font-weight: 600; }
+.trust-row svg { width: 16px; height: 16px; color: var(--cyan); }
+.hero-visual { position: relative; width: 100%; aspect-ratio: 1; max-width: 520px; margin-inline: auto; }
+.hero-visual .hero-canvas, .hero-visual .hero-fallback { position: absolute; inset: 0; transition: opacity .6s ease; }
+.hero-visual .hero-fallback img { width: 100%; height: 100%; object-fit: cover; border-radius: 1.5rem; }
+.hero-visual[data-ready="true"] .hero-fallback { opacity: 0; pointer-events: none; }
+.hero-visual .hero-canvas { opacity: 0; }
+.hero-visual[data-ready="true"] .hero-canvas { opacity: 1; }
+
+.platform-jumps { background: color-mix(in oklab, var(--background) 92%, transparent); backdrop-filter: blur(14px); }
+.jump-inner a { border: 1px solid var(--border); background: var(--card); color: var(--foreground); box-shadow: none; transition: border-color .2s, transform .2s; }
+.jump-inner a:hover { border-color: var(--cyan); background: var(--secondary); transform: translateY(-1px); }
+
+.beginner-step-grid li { padding: 1rem 1.1rem; border: 1px solid var(--border); border-radius: 1rem; background: var(--card); }
+.beginner-number { display: grid; place-items: center; width: 1.8rem; height: 1.8rem; flex-shrink: 0; border-radius: 50%; background: var(--primary); color: var(--primary-foreground); font-weight: 800; font-size: .9rem; }
+
+.platform-panel { margin-block: 1.25rem; padding: 1.5rem; border: 1px solid var(--border); border-top: 3px solid var(--platform-accent); border-radius: 1.25rem; background: linear-gradient(180deg, color-mix(in oklab, var(--platform-accent) 7%, var(--card)), var(--card) 40%); }
+.platform-emblem { display: grid; place-items: center; width: 2.9rem; height: 2.9rem; border-radius: .9rem; background: color-mix(in oklab, var(--platform-accent) 18%, transparent); color: var(--platform-accent); }
+.service-tile { border-radius: 1rem; background: color-mix(in oklab, var(--background) 55%, var(--card)); transition: border-color .2s, transform .2s, box-shadow .2s; }
+.service-tile:hover { border-color: var(--platform-accent); transform: translateY(-2px); box-shadow: 0 10px 30px -14px var(--platform-accent); }
+.service-rate { font-size: 1.5rem; font-weight: 800; color: var(--foreground); }
+.service-rate span { font-size: .85rem; font-weight: 500; color: var(--muted-foreground); }
+
+.home-catalogue { padding-bottom: 6rem; }
+.floating-support { box-shadow: 0 8px 28px -8px color-mix(in oklab, var(--button) 60%, transparent); }
+
+@media (max-width: 900px) {
+  .home-intro { grid-template-columns: 1fr; padding-block: 2rem 1.5rem; }
+  .hero-visual { max-width: 340px; order: -1; }
+}
+@media (max-width: 640px) {
+  .home-intro img { width: 100%; height: 100%; }
+  .home-intro .hero-copy > p { font-size: 1.02rem; }
+  .hero-actions .btn, .hero-actions a { flex: 1 1 100%; justify-content: center; }
+  .trust-row li { font-size: .8rem; }
+  .platform-panel { padding: 1.1rem; border-radius: 1rem; }
+  .site-nav .account-controls .button, .site-nav .account-controls a { min-height: 44px; }
+  .home-catalogue { padding-bottom: 7rem; }
+}
+
+/* ---- Empty states, FAQ and phone header ---- */
+.platform-empty { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .8rem 1.2rem; padding: 1rem 1.2rem; border: 1px dashed var(--border); border-radius: .9rem; background: color-mix(in oklab, var(--background) 50%, transparent); }
+.platform-empty p { margin: 0; }
+.home-faq { padding-block: 1rem 4rem; max-width: 860px; }
+.home-faq .faq-item summary { font-size: 1.05rem; }
+.footer-bottom { border-top: 1px solid var(--border); }
+@media (max-width: 640px) {
+  .site-nav .account-controls { display: flex; gap: .5rem; }
+  .site-nav .account-controls > * { flex: 1 1 0; justify-content: center; text-align: center; }
+  .platform-empty { flex-direction: column; align-items: stretch; text-align: center; }
+}

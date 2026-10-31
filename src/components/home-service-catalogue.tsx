@@ -55,7 +55,7 @@ export function HomeServiceCatalogue() {
         const services = catalogueServices.filter((service) => service.platform === platform.name);
         return <section className={`platform-panel platform-${platform.id}`} id={platform.id} key={platform.id} aria-labelledby={`${platform.id}-title`}>
           <header className="platform-panel-heading"><div><span className="platform-emblem"><Icon size={28} aria-hidden="true" /></span><h3 id={`${platform.id}-title`}>{platform.name}</h3></div><span>{services.length} services</span></header>
-          {services.length === 0 && <p className="platform-empty">No active services yet. Check back soon or chat with us.</p>}
+          {services.length === 0 && <div className="platform-empty"><p>New {platform.name} services are being added. Message us to order now.</p><Button asChild variant="outline"><a href={whatsappUrl(generalWhatsAppMessage)} target="_blank" rel="noreferrer"><MessageCircle aria-hidden="true" />Ask on WhatsApp</a></Button></div>}
           <div className="service-tile-grid">{services.map((service) => <article className="service-tile" key={service.id}>
             <span className="service-type">{service.type}</span>
             <h4>{service.name}</h4>
