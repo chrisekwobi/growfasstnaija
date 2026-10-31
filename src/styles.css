@@ -545,3 +545,34 @@
 /* On phones the floating chat button stays hidden until the visitor scrolls past the hero, so it never covers the hero buttons. */
 .floating-support { transition: opacity .2s ease, visibility .2s ease; }
 @media (max-width: 640px) { .floating-support-early { visibility: hidden; opacity: 0; } }
+
+/* ---- Phone polish: compact header, text-first hero, tidy trust badges ---- */
+@media (max-width: 640px) {
+  .site-nav { flex-wrap: nowrap; gap: .5rem; min-height: 60px; padding-block: .5rem; }
+  .site-nav .account-controls { order: 0; width: auto; margin-left: auto; flex: 0 1 auto; gap: .4rem; flex-wrap: nowrap; }
+  .site-nav .account-controls > * { flex: 0 0 auto; }
+  .site-nav .account-controls a, .site-nav .account-controls .button { min-height: 40px; padding-inline: .8rem; font-size: .9rem; }
+  .site-nav:has(.credit-balance) { flex-wrap: wrap; }
+  .site-nav:has(.credit-balance) .account-controls { order: 3; width: 100%; flex-wrap: wrap; margin-left: 0; }
+  .site-nav:has(.credit-balance) .account-controls > * { flex: 1 1 auto; }
+  .platform-jumps { top: 60px; }
+  body:has(.site-nav .credit-balance) .platform-jumps { top: 118px; }
+  .home-intro { padding-block: 1.6rem 1rem; }
+  .home-intro h1 { font-size: 2.15rem; line-height: 1.12; }
+  .hero-art-stack { order: 2; max-width: 200px; margin-top: .4rem; margin-bottom: .6rem; }
+  .trust-row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .5rem; margin-top: 1.2rem; }
+  .trust-row li { justify-content: flex-start; font-size: .78rem; padding: .5rem .65rem; line-height: 1.25; border-radius: .7rem; }
+  .trust-row svg { flex-shrink: 0; }
+  .floating-support { min-height: 44px; padding-inline: .9rem; font-size: .9rem; }
+}
+@media (max-width: 360px) {
+  .site-nav .account-controls a { padding-inline: .6rem; font-size: .82rem; }
+  .home-intro h1 { font-size: 1.9rem; }
+}
+@media (max-width: 640px) {
+  .home-intro .hero-art-stack { width: 200px; max-width: 200px; flex: 0 0 auto; }
+  .site-nav .mobile-menu-button { flex-shrink: 0; width: 40px; height: 40px; }
+  .site-nav .brand, .site-nav > a:first-child { min-width: 0; flex-shrink: 1; }
+}
+@media (max-width: 640px) { .site-nav .brand-mark { flex-shrink: 0; } .site-nav .brand-link { font-size: 1.05rem; gap: .45rem; } }
+@media (max-width: 360px) { .site-nav .brand-mark { width: 32px; height: 32px; } }
