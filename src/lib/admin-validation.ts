@@ -1,7 +1,9 @@
 import { z } from "zod";
 
 const money = z.number().finite().nonnegative();
-export const settingsSchema = z.object({ exchange_rate: money.positive("Set your NGN per USD exchange rate."), default_markup: money, low_balance_threshold: money, paystack_fee_percent: money.max(100), minimum_topup: money.min(500) }).strict();
+// Nitro NG quotes service rates in Naira. The stored columns keep their historical *_usd / exchange_rate names, so rates are multiplied by 1.
+export const NITRO_NGN_EXCHANGE_RATE = 1;
+export const settingsSchema = z.object({ exchange_rate: z.literal(NITRO_NGN_EXCHANGE_RATE), default_markup: money, low_balance_threshold: money, paystack_fee_percent: money.max(100), minimum_topup: money.min(500) }).strict();
 export const adminServiceSchema = z.object({ id: z.string().uuid(), name: z.string().trim().min(1).max(500), platform: z.string().trim().min(1).max(100), category: z.string().trim().min(1).max(500), markup_percent: money, markup_override: z.boolean(), price_override_ngn: money.nullable(), min_qty: z.number().int().positive(), max_qty: z.number().int().positive(), active: z.boolean() }).strict().refine(v => v.max_qty >= v.min_qty, "Maximum must be at least the minimum.");
 const reason = z.string().trim().min(1, "A reason is required.").max(1000);
 export const adminMutationSchema = z.discriminatedUnion("action", [
@@ -12,7 +14,7 @@ export const adminMutationSchema = z.discriminatedUnion("action", [
   z.object({ action: z.literal("suspend"), payload: z.object({ user_id: z.string().uuid(), suspended: z.boolean(), reason }).strict() }),
   z.object({ action: z.enum(["refund", "cancel"]), payload: z.object({ id: z.string().uuid(), reason }).strict() }),
 ]);
-export const defaultAdminSettings = { id: 1, exchange_rate: 0, default_markup: 0, low_balance_threshold: 10, paystack_fee_percent: 0, minimum_topup: 500 };
+export const defaultAdminSettings = { id: 1, exchange_rate: NITRO_NGN_EXCHANGE_RATE, default_markup: 0, low_balance_threshold: 5000, paystack_fee_percent: 0, minimum_topup: 500 };
 export function serviceEconomics(rate: number, exchange: number, markup: number, override: number | null) {
   const cost = rate * exchange;
   const price = override ?? Math.round(cost * (1 + markup / 100) * 100) / 100;
