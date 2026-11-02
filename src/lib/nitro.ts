@@ -28,10 +28,34 @@ export function platformFromCategory(category: string) {
   return "Other";
 }
 
-export function parseNitroServices(input: unknown) {
-  return z.array(nitroItemSchema).parse(input).map((item) => ({
+function toCatalogueRow(item: z.infer<typeof nitroItemSchema>) {
+  const fromCategory = platformFromCategory(item.category);
+  return {
     nitro_service_id: item.service, name: item.name, category: item.category,
-    platform: platformFromCategory(item.category), nitro_rate_usd: item.rate,
-    min_qty: item.min, max_qty: item.max,
-  }));
+    // Some providers keep the platform only in the service name, so fall back to it.
+    platform: fromCategory === "Other" ? platformFromCategory(item.name) : fromCategory,
+    // Historical column name: Nitro NG quotes rates in Naira, so this holds Naira per 1,000.
+    nitro_rate_usd: item.rate, min_qty: item.min, max_qty: item.max,
+  };
+}
+
+export function parseNitroServices(input: unknown) {
+  return z.array(nitroItemSchema).parse(input).map(toCatalogueRow);
+}
+
+/**
+ * Tolerant import: one malformed entry must not block the whole catalogue.
+ * Invalid entries are counted and skipped; duplicate service ids keep the last entry,
+ * because a single upsert cannot touch the same row twice.
+ */
+export function parseNitroCatalogue(input: unknown) {
+  if (!Array.isArray(input)) throw new Error("Nitro did not return a list of services.");
+  const byId = new Map<string, ReturnType<typeof toCatalogueRow>>();
+  let skipped = 0;
+  for (const entry of input) {
+    const parsed = nitroItemSchema.safeParse(entry);
+    if (!parsed.success) { skipped += 1; continue; }
+    byId.set(parsed.data.service, toCatalogueRow(parsed.data));
+  }
+  return { services: [...byId.values()], skipped };
 }
