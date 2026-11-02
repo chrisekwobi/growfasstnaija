@@ -52,21 +52,15 @@ export function HeroArt() {
           <circle cx="43" cy="74" r="9" fill="#fff" /><circle cx="71" cy="70" r="9" fill="#fff" />
           <path d="M52 74V38l28-6v38" fill="none" stroke="#fff" strokeWidth="6" strokeLinejoin="round" />
         </g></g></g>
-
-        {/* Row 3: Audiomack, centered */}
-        <g className="ha-float ha-d3"><g transform="translate(187 312)"><g transform="rotate(-3 53 53)">
-          <rect width="106" height="106" rx="26" fill="#ffa200" />
-          <g fill="#fff"><rect x="30" y="42" width="9" height="26" rx="4.5" /><rect x="45" y="32" width="9" height="46" rx="4.5" /><rect x="60" y="46" width="9" height="24" rx="4.5" /><rect x="75" y="38" width="9" height="34" rx="4.5" /></g>
-        </g></g></g>
       </g>
 
       <g filter="url(#ha-glow)">
-        <path className="ha-arrow-line" pathLength={1} d="M28 452C120 470 300 420 396 170" fill="none" stroke="url(#ha-swoosh)" strokeWidth="10" strokeLinecap="round" />
+        <path className="ha-arrow-line" pathLength={1} d="M28 352C120 370 300 320 396 170" fill="none" stroke="url(#ha-swoosh)" strokeWidth="10" strokeLinecap="round" />
         <polygon className="ha-arrow-head" points="415,116 374,157 423,173" fill="#FF9A2E" />
       </g>
       <g fill="#fff" aria-hidden="true">
         <circle className="ha-spark" cx="150" cy="30" r="3" /><circle className="ha-spark ha-d2" cx="420" cy="226" r="2.5" /><circle className="ha-spark ha-d3" cx="46" cy="330" r="2.5" />
-        <circle className="ha-spark ha-d4" cx="446" cy="120" r="2.5" fill="#FF9A2E" /><circle className="ha-spark ha-d5" cx="214" cy="452" r="2.5" fill="#2EC99A" />
+        <circle className="ha-spark ha-d4" cx="446" cy="120" r="2.5" fill="#FF9A2E" /><circle className="ha-spark ha-d5" cx="214" cy="352" r="2.5" fill="#2EC99A" />
       </g>
     </svg>
   );
