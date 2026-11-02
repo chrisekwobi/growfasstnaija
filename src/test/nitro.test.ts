@@ -4,7 +4,7 @@ import { parseNitroServices, serviceEditsSchema } from "@/lib/nitro";
 describe("Nitro service synchronization", () => {
   it("imports provider metadata without owner-controlled pricing fields", () => {
     const [row] = parseNitroServices([{ service: 123, name: "TikTok views", category: "TikTok Views", rate: "0.25", min: "100", max: "100000" }]);
-    expect(row).toEqual({ nitro_service_id: "123", name: "TikTok views", category: "TikTok Views", platform: "TikTok", nitro_rate_usd: 0.25, min_qty: 100, max_qty: 100000 });
+    expect(row).toEqual({ nitro_service_id: "123", name: "TikTok views", category: "Views", platform: "TikTok", nitro_rate_usd: 0.25, min_qty: 100, max_qty: 100000 });
     expect(row).not.toHaveProperty("price_per_1000_ngn");
     expect(row).not.toHaveProperty("markup_percent");
     expect(row).not.toHaveProperty("active");

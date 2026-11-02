@@ -2,7 +2,8 @@ import { createServerFn } from "@tanstack/react-start";
 import { createClient } from "@supabase/supabase-js";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import type { Database } from "@/integrations/supabase/types";
-import { parseNitroServices, serviceEditsSchema } from "@/lib/nitro";
+import { serviceEditsSchema } from "@/lib/nitro";
+import { describeSyncSuccess, readNitroSyncResponse } from "@/lib/nitro-sync";
 
 export const listActiveServices = createServerFn({ method: "GET" }).handler(async () => {
   const url = process.env["SUPABASE_URL"];
@@ -59,18 +60,24 @@ export const syncNitroServices = createServerFn({ method: "POST" }).middleware([
   if (profile.error || profile.data.suspended) throw new Error("Admin access required.");
   const apiUrl = process.env["NITRO_API_URL"]?.trim();
   const apiKey = process.env["NITRO_API_KEY"]?.trim();
-  if (!apiUrl || !apiKey) return { success: false, count: 0, message: "Add Nitro API URL and API key in Cloud secrets before syncing." };
+  const failed = (message: string) => ({ success: false, count: 0, message: `${message} Existing services were not changed.` });
+  if (!apiUrl || !apiKey) return failed("Add NITRO_API_URL and NITRO_API_KEY to your secrets (or .env.local when running locally).");
+  let url: URL;
+  try { url = new URL(apiUrl); } catch { return failed("NITRO_API_URL is not a valid address. Use the full address, for example https://nitro.ng/api/v2."); }
+  if (url.protocol !== "https:") return failed("NITRO_API_URL must start with https://.");
+  let reading: ReturnType<typeof readNitroSyncResponse>;
   try {
-    const url = new URL(apiUrl);
-    if (url.protocol !== "https:") throw new Error("HTTPS required");
     const response = await fetch(url, { method: "POST", redirect: "manual", headers: { "Content-Type": "application/x-www-form-urlencoded" }, body: new URLSearchParams({ key: apiKey, action: "services" }), signal: AbortSignal.timeout(30000) });
-    if (!response.ok) throw new Error("Nitro request failed");
-    const services = parseNitroServices(await response.json());
-    if (services.length === 0) throw new Error("Empty provider catalogue; existing services left unchanged");
-    const result = await context.supabase.rpc("admin_sync_catalogue", { _services: services });
-    if (result.error) throw new Error("Nitro import failed");
-    return { success: true, count: result.data, message: `Synced ${result.data} services. Names, categories, markup, price overrides and quantity limits were preserved. Missing services were deactivated.` };
-  } catch {
-    return { success: false, count: 0, message: "Nitro sync failed. Check the API URL, key and provider service response, then retry. Existing service edits were not changed." };
+    // Nitro lists thousands of niche variants; by default import only the services it recommends (pick: true).
+    reading = readNitroSyncResponse(response.status, await response.text(), { pickedOnly: process.env["NITRO_SYNC_ALL"]?.trim() !== "true" });
+  } catch { return failed("Could not reach Nitro. Check your connection and the API address, then retry."); }
+  if (!reading.ok) return failed(reading.message);
+  const result = await context.supabase.rpc("admin_sync_catalogue", { _services: reading.services });
+  if (result.error) {
+    // The browser only sees a generic line; the exact database reason goes to the server log for the admin to read.
+    console.error("[nitro-sync] database rejected the import:", result.error.code, result.error.message, result.error.details ?? "");
+    const guard = /less than half|Empty provider catalogue/.exec(result.error.message);
+    return failed(guard ? result.error.message : "The database rejected the import.");
   }
+  return { success: true, count: result.data, message: describeSyncSuccess(result.data, reading.skipped, { total: reading.total, usedPicks: reading.usedPicks }) };
 });
