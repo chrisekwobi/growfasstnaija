@@ -2,13 +2,13 @@
 
 /**
  * Homepage hero art: a compact platform tile cluster (TikTok, Instagram,
- * Facebook, YouTube, Spotify, Apple Music, Audiomack) with a glowing growth
+ * Facebook, YouTube, Spotify, Apple Music) with a glowing growth
  * arrow rising beside it. Pure SVG + CSS (see .ha-* rules in styles.css);
  * motion is disabled for reduced-motion users.
  */
 export function HeroArt() {
   return (
-    <svg className="hero-art" viewBox="0 0 480 480" role="img" aria-label="Tiles showing the TikTok, Instagram, Facebook, YouTube, Spotify, Apple Music and Audiomack logos with a glowing growth arrow rising through them">
+    <svg className="hero-art" viewBox="0 0 480 380" role="img" aria-label="Tiles showing the TikTok, Instagram, Facebook, YouTube, Spotify and Apple Music logos with a glowing growth arrow rising through them">
       <defs>
         <radialGradient id="ha-halo" cx="50%" cy="50%" r="50%"><stop offset="0" stopColor="#2EC99A" stopOpacity=".3" /><stop offset="1" stopColor="#2EC99A" stopOpacity="0" /></radialGradient>
         <linearGradient id="ha-swoosh" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stopColor="#2EC99A" /><stop offset=".55" stopColor="#9ff2d8" /><stop offset="1" stopColor="#FF9A2E" /></linearGradient>
@@ -16,7 +16,7 @@ export function HeroArt() {
         <filter id="ha-glow" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="5" result="b" /><feMerge><feMergeNode in="b" /><feMergeNode in="SourceGraphic" /></feMerge></filter>
         <filter id="ha-tile-shadow" x="-30%" y="-30%" width="160%" height="160%"><feDropShadow dx="0" dy="7" stdDeviation="7" floodColor="#000" floodOpacity=".38" /></filter>
       </defs>
-      <circle cx="240" cy="240" r="236" fill="url(#ha-halo)" />
+      <circle cx="240" cy="190" r="186" fill="url(#ha-halo)" />
 
       <g filter="url(#ha-tile-shadow)">
         {/* Row 1: TikTok, Instagram, Facebook */}
