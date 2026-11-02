@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { describeSyncSuccess, readNitroSyncResponse } from "@/lib/nitro-sync";
+// pick may arrive as a boolean or a string depending on the provider.
 
 const item = (over: Record<string, unknown> = {}) => ({ service: 1, name: "Followers", category: "TikTok Followers", rate: "1500.50", min: "100", max: "50000", ...over });
 const reply = (status: number, body: unknown) => readNitroSyncResponse(status, typeof body === "string" ? body : JSON.stringify(body));
@@ -15,6 +16,10 @@ describe("Nitro sync response reading", () => {
     expect(result).toMatchObject({ ok: true, skipped: 3 });
     if (result.ok) expect(result.services).toHaveLength(1);
   });
+  it("skips quantities too large for the database's 32-bit integer columns", () => {
+    const result = reply(200, [item(), item({ service: 2, max: 3_000_000_000 })]);
+    expect(result).toMatchObject({ ok: true, skipped: 1 });
+  });
   it("keeps one entry per service id so the upsert cannot hit a row twice", () => {
     const result = reply(200, [item({ name: "Old" }), item({ name: "New" })]);
     if (!result.ok) throw new Error("expected ok");
@@ -25,6 +30,39 @@ describe("Nitro sync response reading", () => {
     const result = reply(200, [item({ category: "Budget", name: "YouTube Views" })]);
     if (!result.ok) throw new Error("expected ok");
     expect(result.services[0]?.platform).toBe("YouTube");
+  });
+  it("removes broken emoji and control characters that make the upload invalid JSON", () => {
+    const result = reply(200, [item({ name: "Likes \ud83d broken\u0000 name" })]);
+    if (!result.ok) throw new Error("expected ok");
+    expect(result.services[0]?.name).toBe("Likes broken name");
+    expect(() => JSON.parse(JSON.stringify(result.services))).not.toThrow();
+    expect(JSON.stringify(result.services)).not.toMatch(/\\ud8|\\u0000/i);
+  });
+  it("keeps valid flag emoji", () => {
+    const result = reply(200, [item({ name: "Instagram Followers 🇳🇬 (Premium)" })]);
+    if (!result.ok) throw new Error("expected ok");
+    expect(result.services[0]?.name).toContain("🇳🇬");
+  });
+  it("labels platforms from Nitro's slug categories and the service kind from the name", () => {
+    const result = reply(200, [
+      item({ service: 1, category: "applemusic", name: "Apple Music Plays" }),
+      item({ service: 2, category: "twitter", name: "X Followers (Budget)" }),
+      item({ service: 3, category: "kick", name: "Kick Live Viewers" }),
+    ]);
+    if (!result.ok) throw new Error("expected ok");
+    expect(result.services.map((s) => [s.platform, s.category])).toEqual([["Apple Music", "Plays"], ["Twitter / X", "Followers"], ["Kick", "Other"]]);
+  });
+  it("imports only Nitro's recommended services by default and reports the full size", () => {
+    const body = [item({ service: 1, pick: true }), item({ service: 2 }), item({ service: 3, pick: "true" }), item({ service: 4 })];
+    const picked = readNitroSyncResponse(200, JSON.stringify(body), { pickedOnly: true });
+    expect(picked).toMatchObject({ ok: true, total: 4, usedPicks: true });
+    if (picked.ok) expect(picked.services.map((s) => s.nitro_service_id)).toEqual(["1", "3"]);
+    const everything = readNitroSyncResponse(200, JSON.stringify(body), { pickedOnly: false });
+    if (everything.ok) expect(everything.services).toHaveLength(4);
+  });
+  it("falls back to the whole catalogue when Nitro marks no recommended services", () => {
+    const result = readNitroSyncResponse(200, JSON.stringify([item(), item({ service: 2 })]), { pickedOnly: true });
+    expect(result).toMatchObject({ ok: true, usedPicks: false, total: 2 });
   });
   it("explains a rejected key without echoing anything secret", () => {
     const result = reply(401, { error: "Invalid API key" });
@@ -47,5 +85,6 @@ describe("Nitro sync response reading", () => {
   it("mentions skipped entries in the success message only when there are some", () => {
     expect(describeSyncSuccess(10, 0)).not.toContain("skipped");
     expect(describeSyncSuccess(10, 3)).toContain("3 entries from Nitro were skipped");
+    expect(describeSyncSuccess(271, 0, { total: 8724, usedPicks: true })).toContain("271 recommended services (its full catalogue has");
   });
 });

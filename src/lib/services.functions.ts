@@ -68,13 +68,16 @@ export const syncNitroServices = createServerFn({ method: "POST" }).middleware([
   let reading: ReturnType<typeof readNitroSyncResponse>;
   try {
     const response = await fetch(url, { method: "POST", redirect: "manual", headers: { "Content-Type": "application/x-www-form-urlencoded" }, body: new URLSearchParams({ key: apiKey, action: "services" }), signal: AbortSignal.timeout(30000) });
-    reading = readNitroSyncResponse(response.status, await response.text());
+    // Nitro lists thousands of niche variants; by default import only the services it recommends (pick: true).
+    reading = readNitroSyncResponse(response.status, await response.text(), { pickedOnly: process.env["NITRO_SYNC_ALL"]?.trim() !== "true" });
   } catch { return failed("Could not reach Nitro. Check your connection and the API address, then retry."); }
   if (!reading.ok) return failed(reading.message);
   const result = await context.supabase.rpc("admin_sync_catalogue", { _services: reading.services });
   if (result.error) {
+    // The browser only sees a generic line; the exact database reason goes to the server log for the admin to read.
+    console.error("[nitro-sync] database rejected the import:", result.error.code, result.error.message, result.error.details ?? "");
     const guard = /less than half|Empty provider catalogue/.exec(result.error.message);
     return failed(guard ? result.error.message : "The database rejected the import.");
   }
-  return { success: true, count: result.data, message: describeSyncSuccess(result.data, reading.skipped) };
+  return { success: true, count: result.data, message: describeSyncSuccess(result.data, reading.skipped, { total: reading.total, usedPicks: reading.usedPicks }) };
 });
