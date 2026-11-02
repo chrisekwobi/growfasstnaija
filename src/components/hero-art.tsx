@@ -1,5 +1,3 @@
-// ============= Full file contents =============
-
 /**
  * Homepage hero art: a compact platform tile cluster (TikTok, Instagram,
  * Facebook, YouTube, Spotify, Apple Music) with a glowing growth
