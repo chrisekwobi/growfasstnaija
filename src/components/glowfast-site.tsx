@@ -25,7 +25,7 @@ import {
   Youtube,
 } from "lucide-react";
 import { HomeServiceCatalogue } from "@/components/home-service-catalogue";
-import { AccountControls } from "@/components/account-controls";
+import { AccountControls, MobileAccountMenu } from "@/components/account-controls";
 import { HeroArt } from "@/components/hero-art";
 import { HeroScene } from "@/components/hero-scene";
 import heroArt from "@/assets/glowfast-social-visual.jpg";
@@ -115,6 +115,7 @@ export function SiteHeader() {
       </nav>
       {menuOpen && (
         <div className="mobile-nav">
+          <MobileAccountMenu onNavigate={() => setMenuOpen(false)} />
           <Link onClick={() => setMenuOpen(false)} to="/">Home</Link>
           <Link onClick={() => setMenuOpen(false)} to="/services">All services</Link>
           {platformPages.slice(0, 5).map((platform) => (

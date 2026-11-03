@@ -4,7 +4,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import type { User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import { LogOut, Wallet } from "lucide-react";
+import { ClipboardList, LogIn, LogOut, ShieldCheck, Wallet } from "lucide-react";
 import { formatNaira } from "@/lib/glowfast";
 
 const AccountContext = createContext<{ user: User | null; loading: boolean; recovery: boolean }>({ user: null, loading: true, recovery: false });
@@ -36,8 +36,8 @@ export function AccountProvider({ children }: { children: ReactNode }) {
   return <AccountContext.Provider value={{ user, loading, recovery }}>{children}</AccountContext.Provider>;
 }
 
-export function AccountControls() {
-  const { user, loading } = useAccount();
+function useAccountActions() {
+  const { user } = useAccount();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const [notice, setNotice] = useState("");
@@ -59,9 +59,40 @@ export function AccountControls() {
     if (error) { setNotice("Could not log out. Please retry."); return; }
     await navigate({ to: "/auth", search: { mode: "login" }, replace: true });
   }
+  return { profile, isAdmin: Boolean(role.data), logout, notice };
+}
+
+/** Header account area. On phones and tablets only the balance chip (or Log in / Sign up) shows; the rest lives in the menu. */
+export function AccountControls() {
+  const { user, loading } = useAccount();
+  const { profile, isAdmin, logout, notice } = useAccountActions();
   if (loading) return <span className="account-loading" aria-live="polite">Account…</span>;
   return <div className="account-controls">
-    {user ? <><span className="credit-balance"><Wallet size={18} aria-hidden="true" />{profile.isError ? "Balance unavailable" : profile.data ? `${formatNaira(profile.data.credits_balance)} credits` : "Balance…"}</span><Button asChild><Link to="/orders">My orders</Link></Button><Button asChild><Link to="/top-up">Add credits</Link></Button>{role.data && <Button asChild><Link to="/admin">Admin</Link></Button>}<Button size="icon" onClick={logout} aria-label="Log out" title="Log out"><LogOut aria-hidden="true" /></Button></> : <><Button asChild><Link to="/auth" search={{ mode: "login" }}>Login</Link></Button><Button asChild><Link to="/auth" search={{ mode: "signup" }}>Sign up</Link></Button></>}
+    {user ? <>
+      <Link to="/top-up" className="credit-balance" aria-label="Your credit balance. Add credits"><Wallet size={16} aria-hidden="true" />{profile.isError ? "Balance unavailable" : profile.data ? <><span>{formatNaira(profile.data.credits_balance)}</span><span className="credit-word"> credits</span></> : "Balance…"}</Link>
+      <span className="account-actions">
+        <Button asChild><Link to="/orders">My orders</Link></Button>
+        <Button asChild><Link to="/top-up">Add credits</Link></Button>
+        {isAdmin && <Button asChild><Link to="/admin">Admin</Link></Button>}
+        <Button size="icon" onClick={logout} aria-label="Log out" title="Log out"><LogOut aria-hidden="true" /></Button>
+      </span>
+    </> : <>
+      <Button asChild className="account-login"><Link to="/auth" search={{ mode: "login" }}>Log in</Link></Button>
+      <Button asChild><Link to="/auth" search={{ mode: "signup" }}>Sign up</Link></Button>
+    </>}
     {notice && <span role="alert">{notice}</span>}
+  </div>;
+}
+
+/** Account links for the mobile menu (logged-in users only). */
+export function MobileAccountMenu({ onNavigate }: { onNavigate: () => void }) {
+  const { user } = useAccount();
+  const { isAdmin, logout } = useAccountActions();
+  if (!user) return <div className="mobile-account mobile-login-only"><Link to="/auth" search={{ mode: "login" }} onClick={onNavigate}><LogIn aria-hidden="true" />Log in</Link></div>;
+  return <div className="mobile-account" role="group" aria-label="Your account">
+    <Link to="/orders" onClick={onNavigate}><ClipboardList aria-hidden="true" />My orders</Link>
+    <Link to="/top-up" onClick={onNavigate}><Wallet aria-hidden="true" />Add credits</Link>
+    {isAdmin && <Link to="/admin" onClick={onNavigate}><ShieldCheck aria-hidden="true" />Admin</Link>}
+    <button type="button" onClick={() => { onNavigate(); void logout(); }}><LogOut aria-hidden="true" />Log out</button>
   </div>;
 }
