@@ -12,6 +12,36 @@ import { cataloguePlatforms, type CatalogueService } from "@/lib/service-catalog
 
 const platformIcons = { video: Music2, instagram: Instagram, facebook: Facebook, youtube: Youtube, twitter: Twitter, telegram: Send };
 
+const VISIBLE_TILES = 8;
+const compactNumber = new Intl.NumberFormat("en-NG", { notation: "compact", maximumFractionDigits: 1 });
+
+function PlatformPanel({ platform, services, onSelect }: { platform: { id: string; name: string; icon: string }; services: CatalogueService[]; onSelect: (service: CatalogueService) => void }) {
+  const Icon = platformIcons[platform.icon as keyof typeof platformIcons] ?? Send;
+  const [kind, setKind] = useState("All");
+  const [expanded, setExpanded] = useState(false);
+  const kinds = [...services.reduce((counts, service) => counts.set(service.type, (counts.get(service.type) ?? 0) + 1), new Map<string, number>())].sort((a, b) => b[1] - a[1]);
+  const matching = kind === "All" ? services : services.filter((service) => service.type === kind);
+  const shown = expanded ? matching : matching.slice(0, VISIBLE_TILES);
+  const hidden = matching.length - shown.length;
+  return <section className={`platform-panel platform-${platform.id}`} id={platform.id} aria-labelledby={`${platform.id}-title`}>
+    <header className="platform-panel-heading"><div><span className="platform-emblem"><Icon size={22} aria-hidden="true" /></span><h3 id={`${platform.id}-title`}>{platform.name}</h3></div><span>{services.length} services</span></header>
+    {services.length === 0 && <div className="platform-empty"><p>New {platform.name} services are being added. Message us to order now.</p><Button asChild variant="outline" size="sm"><a href={whatsappUrl(generalWhatsAppMessage)} target="_blank" rel="noreferrer"><MessageCircle aria-hidden="true" />Ask on WhatsApp</a></Button></div>}
+    {kinds.length > 1 && <div className="kind-chips" role="group" aria-label={`Filter ${platform.name} services by type`}>
+      {[["All", services.length] as const, ...kinds].map(([name, count]) => <button type="button" key={name} aria-pressed={kind === name} onClick={() => { setKind(name); setExpanded(false); }}>{name} <span>{count}</span></button>)}
+    </div>}
+    <div className="service-tile-grid">{shown.map((service) => <article className="service-tile" key={service.id}>
+      <span className="service-type">{service.type}</span>
+      <h4 title={service.name}>{service.name}</h4>
+      <p className="service-limits">Min {compactNumber.format(service.min)} · Max {compactNumber.format(service.max)}</p>
+      <div className="service-foot">
+        <p className="service-rate">{formatNaira(service.pricePerThousand)} <span>/ 1,000</span></p>
+        <Button size="sm" onClick={() => onSelect(service)} aria-label={`Order now: ${service.name}`}>Order <ArrowRight aria-hidden="true" /></Button>
+      </div>
+    </article>)}</div>
+    {matching.length > VISIBLE_TILES && <Button className="show-more" variant="outline" size="sm" aria-expanded={expanded} onClick={() => setExpanded((open) => !open)}>{expanded ? "Show fewer" : `Show all ${matching.length} ${kind === "All" ? "" : `${kind.toLowerCase()} `}services (${hidden} more)`}</Button>}
+  </section>;
+}
+
 export function HomeServiceCatalogue() {
   const { data: rows } = useSuspenseQuery(activeServicesQuery);
   const catalogueServices: CatalogueService[] = rows.map((row) => ({ id: row.id, platform: row.platform, type: row.category, name: row.name, pricePerThousand: row.price_per_1000_ngn, min: row.min_qty, max: row.max_qty }));
@@ -44,7 +74,7 @@ export function HomeServiceCatalogue() {
     <nav className="platform-jumps" aria-label="Jump to platform services">
       <div className="page-wrap jump-inner">{displayedPlatforms.map((platform) => {
         const Icon = platformIcons[platform.icon as keyof typeof platformIcons] ?? Send;
-        return <Button asChild key={platform.id}><a href={`#${platform.id}`}><Icon aria-hidden="true" />{platform.name}</a></Button>;
+        return <Button asChild size="sm" key={platform.id}><a href={`#${platform.id}`}><Icon aria-hidden="true" />{platform.name}</a></Button>;
       })}</div>
     </nav>
     <section className="page-wrap beginner-steps" id="how-it-works" aria-labelledby="how-title">
@@ -57,21 +87,7 @@ export function HomeServiceCatalogue() {
     </section>
     <section className="page-wrap home-catalogue" id="services" aria-labelledby="services-title">
       <div className="catalogue-heading"><div><span className="eyebrow">Choose your platform</span><h2 id="services-title">Services</h2></div><p><Bookmark aria-hidden="true" /> Confirm availability before payment</p></div>
-      {displayedPlatforms.map((platform) => {
-        const Icon = platformIcons[platform.icon as keyof typeof platformIcons] ?? Send;
-        const services = catalogueServices.filter((service) => service.platform === platform.name);
-        return <section className={`platform-panel platform-${platform.id}`} id={platform.id} key={platform.id} aria-labelledby={`${platform.id}-title`}>
-          <header className="platform-panel-heading"><div><span className="platform-emblem"><Icon size={28} aria-hidden="true" /></span><h3 id={`${platform.id}-title`}>{platform.name}</h3></div><span>{services.length} services</span></header>
-          {services.length === 0 && <div className="platform-empty"><p>New {platform.name} services are being added. Message us to order now.</p><Button asChild variant="outline"><a href={whatsappUrl(generalWhatsAppMessage)} target="_blank" rel="noreferrer"><MessageCircle aria-hidden="true" />Ask on WhatsApp</a></Button></div>}
-          <div className="service-tile-grid">{services.map((service) => <article className="service-tile" key={service.id}>
-            <span className="service-type">{service.type}</span>
-            <h4>{service.name}</h4>
-            <p className="service-rate">{formatNaira(service.pricePerThousand)} <span>per 1,000</span></p>
-            <dl><div><dt>Min quantity</dt><dd>{service.min.toLocaleString("en-NG")}</dd></div><div><dt>Max quantity</dt><dd>{service.max.toLocaleString("en-NG")}</dd></div></dl>
-            <Button onClick={() => selectService(service)} aria-label={`Order now: ${service.name}`}>Order now <ArrowRight aria-hidden="true" /></Button>
-          </article>)}</div>
-        </section>;
-      })}
+      {displayedPlatforms.map((platform) => <PlatformPanel key={platform.id} platform={platform} services={catalogueServices.filter((service) => service.platform === platform.name)} onSelect={selectService} />)}
       <p className="catalogue-safety">Confirm availability and platform rules before payment. No guaranteed growth or earnings. Never share passwords or login codes.</p>
     </section>
     <Button asChild className={`floating-support${pastHero ? "" : " floating-support-early"}`}><a href={whatsappUrl(generalWhatsAppMessage)} target="_blank" rel="noreferrer"><MessageCircle aria-hidden="true" />Chat with us</a></Button>
