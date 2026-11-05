@@ -48,9 +48,8 @@ export const manageAdmin = createServerFn({ method: "POST" }).middleware([requir
 export const getNitroBalance = createServerFn({ method: "POST" }).middleware([requireSupabaseAuth]).handler(async ({ context }) => {
   await requireAdmin(context.supabase, context.userId);
   const { nitroAdminRequest } = await import("@/lib/nitro-admin.server");
-  // Nitro NG documents only the services, add and status actions; balance may be unsupported.
   let payload: unknown;
-  try { payload = await nitroAdminRequest("balance"); } catch { throw new Error("Nitro does not report its balance through the API. Check your balance on nitro.ng."); }
+  try { payload = await nitroAdminRequest("balance"); } catch (error) { console.error("[nitro-balance] request failed:", error instanceof Error ? error.message : "unknown error"); throw new Error("Nitro does not report its balance through the API. Check your balance on nitro.ng."); }
   const parsed = z.object({ balance: z.coerce.number().finite().nonnegative(), currency: z.string().min(1).default("NGN") }).safeParse(payload);
   if (!parsed.success) throw new Error("Nitro does not report its balance through the API. Check your balance on nitro.ng.");
   return { ...parsed.data, checkedAt: new Date().toISOString() };
