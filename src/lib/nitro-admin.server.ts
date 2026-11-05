@@ -1,5 +1,3 @@
-import { z } from "zod";
-
 export async function nitroAdminRequest(action: string, parameters: Record<string, string> = {}) {
   const key = process.env["NITRO_API_KEY"]?.trim();
   const raw = process.env["NITRO_API_URL"]?.trim();
@@ -11,6 +9,6 @@ export async function nitroAdminRequest(action: string, parameters: Record<strin
   catch { throw new Error("Nitro could not be reached. Please retry."); }
   if (!response.ok) throw new Error("Nitro did not accept this request. Check your provider account.");
   const payload: unknown = await response.json();
-  if (z.object({ error: z.unknown() }).safeParse(payload).success) throw new Error("Nitro did not accept this request. Check your provider account.");
+  if (typeof payload === "object" && payload !== null && "error" in payload) throw new Error("Nitro did not accept this request. Check your provider account.");
   return payload;
 }
